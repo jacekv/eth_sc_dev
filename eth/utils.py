@@ -11,5 +11,4 @@ def calcContractAddress(sender, nonce):
 
     \returns The contracts deployment address as string.
     """
-    sender = bytes.fromhex(sender)
     return keccak_256(rlp.encode([sender, nonce])).hexdigest()[-40:]
