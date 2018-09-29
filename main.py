@@ -8,4 +8,4 @@ tx = {
 }
 
 print(utils.calcContractAddress(tx['from'], tx['nonce']))
-
+print('Successfully created contract')
