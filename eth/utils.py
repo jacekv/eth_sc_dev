@@ -1,7 +1,7 @@
 import rlp
 from sha3 import keccak_256
 
-def calc_contract_address(sender, nonce):
+def calcContractAddress(sender, nonce):
     """
     The function takes the sender and the accounts nonce and calculates 
     the contracts address.
