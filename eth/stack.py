@@ -2,12 +2,14 @@ from CallStackExceptions import *
 
 class Stack(object):
     limit = 1024
-    bitWidth = 256
 
-    def __init__(self):
+    def __init__(self, bitWidth):
         self.stack = []
         self.size = 0
-        
+        if (bitWidth % 8 != 0):
+            raise StackSizeInvalid('Stack word size not a multiple of 8')
+        self.bitWidth = bitWidth
+
     def push(self, obj):
         """
         The functions pushes a value to the stack.
@@ -22,7 +24,7 @@ class Stack(object):
         if obj >= 2**self.bitWidth:
             raise CallStackValueToLarge('Value is to large for the stack.')
         #expand value to 256 bits
-        entry = '{:064x}'.format(obj & (2**self.bitWidth - 1))
+        entry = ('{:0' + str(int(self.bitWidth / 4)) + 'x}').format(obj)
         self.stack.append(entry)
         self.size += 1
 
@@ -45,7 +47,8 @@ class Stack(object):
         """
         return self.stack
 
-s = Stack()
+#s = Stack(256)
+s = Stack(128)
 s.push(0xabcdef)
 s.push(0x0213192038018098adadada5)
 s.push(0x06)
