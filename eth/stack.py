@@ -1,4 +1,5 @@
 from CallStackExceptions import *
+from word import Word
 
 class Stack(object):
     limit = 1024
@@ -24,7 +25,10 @@ class Stack(object):
         if obj >= 2**self.bitWidth:
             raise CallStackValueToLarge('Value is to large for the stack.')
         #expand value to 256 bits
-        entry = ('{:0' + str(int(self.bitWidth / 4)) + 'x}').format(obj)
+        if self.bitWidth == 256:
+            entry = Word(obj)
+        else:
+            entry = ('{:0' + str(int(self.bitWidth / 4)) + 'x}').format(obj)
         self.stack.append(entry)
         self.size += 1
 
@@ -33,7 +37,8 @@ class Stack(object):
         The function takes the latest value from the stack and returns it.
 
         Returns:
-            int: The value which has been added the last.
+            int/word: Depending on the bit width of the stack, it returns int
+                or word
         """
         self.size -= 1
         return self.stack.pop()
@@ -43,14 +48,6 @@ class Stack(object):
         Returns the whole stack.
 
         Returns:
-            array: The while stack
+            array: The whole stack
         """
         return self.stack
-
-#s = Stack(256)
-s = Stack(128)
-s.push(0xabcdef)
-s.push(0x0213192038018098adadada5)
-s.push(0x06)
-#s.pop()
-print(s.getStack())
