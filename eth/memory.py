@@ -34,16 +34,13 @@ class Memory(object):
     def __init__(self):
         self.memory = []
 
-    def mstore(self, address, data, gas):
+    def mstore(self, address, data):
         """
         The function receives some data and stores it in the memory at the given
         address. It also checks if it needs to expand the memory.
 
         \param address (int) : Address where to store the data.
         \param data (int/str): The value to be stored in the memory.
-        \param gas (int)     : Gas, which is reduced for each operation.
-
-        \returns int         : The remaining gas
         """
         word = Word(data)
         #location in array
@@ -52,7 +49,7 @@ class Memory(object):
         position = address % 0x20
         #do we have to expand?
         if len(self.memory) < rest:
-            gas = self.expandMemory(address, gas)
+            self.expandMemory(address, gas)
         # we are not off
         if position == 0:
             self.memory[rest-1] = word
@@ -61,47 +58,36 @@ class Memory(object):
             self.memory[rest ] = high
             self.memory[rest + 1] = low
 
-        return gas
-
-
-    def mstore8(self, address, data, gas):
+    def mstore8(self, address, data):
         """
         Stores a single byte in the memory at the given address.
 
         \param address (int) : Address where to store the data.
         \param data (int/str): The value to be stored in the memory.
-        \param gas (int)     : Gas, which is reduced for each operation.
 
-        \returns int         : The remaining gas
         """
         #location in array
         rest = int(address / 0x20)
         #location within word
         position = address % 0x20
         if (len(self.memory) < rest):
-            gas = self.expandMemory(address, gas)
+            self.expandMemory(address, gas)
 
         word = self.memory[rest]
         word.setByte(data, 31-position)
-        return gas
 
-
-    def expandMemory(self, address, gas):
+    def expandMemory(self, address):
         """
         Function to expand the memory.
 
         \param address (int): The address where data is stored. Used to
             determine how much memory needs to be expanded
-        \param gas (int)    : The gas costs are reduced from that value
-
-        \returns int        : The remining gas
         """
         rest = ceil(address / 0x20)
         if ((address % 20) > 0):
             rest += 1
         for i in range(0, rest):
             self.memory.append(Word())
-        return gas
 
     def getMemory(self):
         """
