@@ -33,6 +33,7 @@ class Memory(object):
 
     def __init__(self):
         self.memory = []
+        self.size = 0
 
     def mstore(self, address, data):
         """
@@ -47,9 +48,6 @@ class Memory(object):
         rest = int(address / 0x20)
         #location within word
         position = address % 0x20
-        #do we have to expand?
-        if len(self.memory) < rest:
-            self.expandMemory(address, gas)
         # we are not off
         if position == 0:
             self.memory[rest-1] = word
@@ -70,9 +68,6 @@ class Memory(object):
         rest = int(address / 0x20)
         #location within word
         position = address % 0x20
-        if (len(self.memory) < rest):
-            self.expandMemory(address, gas)
-
         word = self.memory[rest]
         word.setByte(data, 31-position)
 
@@ -88,6 +83,7 @@ class Memory(object):
             rest += 1
         for i in range(0, rest):
             self.memory.append(Word())
+        self.size = len(self.memory)
 
     def getMemory(self):
         """
@@ -96,3 +92,24 @@ class Memory(object):
         \returns Array: Array containing Word objects.
         """
         return self.memory
+
+    def getMemorySize(self):
+        """
+        Returns the size of the memory.
+
+        \returns Int: The size of the memory.
+        """
+        return self.size
+
+    def __str__(self):
+        """
+        Generated an output of the memory and returns it.
+
+        \returns String: The memory representation.
+        """
+        output = ''
+        address = 0
+        for word in self.memory:
+            output += '{:02x} - {:02x}: {:}\n'.format((address + 0x1F), address, word)
+            address += 0x20
+        return output
