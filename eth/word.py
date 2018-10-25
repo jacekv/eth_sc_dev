@@ -46,7 +46,7 @@ class Word(object):
         """
         The function returns the value of the word.
 
-        \returns int: Value of the word.
+        \returns String: Value of the word.
         """
         return self.value
 
