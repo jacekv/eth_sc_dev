@@ -6,9 +6,9 @@ Table taken from: https://raw.githubusercontent.com/trailofbits/evm-opcodes/mast
 | Opcode | Name | Description | Extra Info | Gas | Inplemented |
 | --- | --- | --- | --- | --- | --- |
 | `0x00` | STOP | Halts execution | - | 0 | |
-| `0x01` | ADD | Addition operation | - | 3 | |
+| `0x01` | ADD | Addition operation | - | 3 | X |
 | `0x02` | MUL | Multiplication operation | - | 5 | |
-| `0x03` | SUB | Subtraction operation | - | 3 | |
+| `0x03` | SUB | Subtraction operation | - | 3 | X |
 | `0x04` | DIV | Integer division operation | - | 5 | |
 | `0x05` | SDIV | Signed integer division operation (truncated) | - | 5 | |
 | `0x06` | MOD | Modulo remainder operation | - | 5 | |
