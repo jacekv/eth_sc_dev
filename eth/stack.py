@@ -4,9 +4,9 @@ from word import Word
 class Stack(object):
     limit = 1024
 
-    def __init__(self, bitWidth):
+    def __init__(self, bitWidth=256):
         self.stack = []
-        self.size = 0
+        self.depth = 0
         if (bitWidth % 8 != 0):
             raise StackSizeInvalid('Stack word size not a multiple of 8')
         self.bitWidth = bitWidth
@@ -20,7 +20,7 @@ class Stack(object):
         """
         if type(obj) != int:
             raise ValueError('Value is not a number.')
-        if self.size >= 1024:
+        if self.depth >= 1024:
             raise CallStackDepthReached('Call stack depth has been reached.')
         if obj >= 2**self.bitWidth:
             raise CallStackValueToLarge('Value is to large for the stack.')
@@ -30,7 +30,7 @@ class Stack(object):
         else:
             entry = ('{:0' + str(int(self.bitWidth / 4)) + 'x}').format(obj)
         self.stack.append(entry)
-        self.size += 1
+        self.depth += 1
 
     def pop(self):
         """
@@ -40,7 +40,7 @@ class Stack(object):
             int/word: Depending on the bit width of the stack, it returns int
                 or word
         """
-        self.size -= 1
+        self.depth -= 1
         return self.stack.pop()
 
     def getStack(self):
@@ -51,3 +51,23 @@ class Stack(object):
             array: The whole stack
         """
         return self.stack
+
+    def getDepth(self):
+        """
+        Returns the stack depth
+
+        Returns:
+            int: The stack depth
+        """
+        return self.depth
+
+    def dup(self, value):
+        """
+        Duplicates the valueth stack.
+
+        Args:
+            value: Valueth value to be duplicated
+        """
+        loc = self.depth - value
+        v = self.stack[loc].getWord()
+        self.push(v)
