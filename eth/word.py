@@ -1,5 +1,5 @@
 import string
-import utils
+from utils import *
 
 class Word(object):
     def __init__(self, value=0, offset=0):
