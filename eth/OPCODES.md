@@ -3,13 +3,17 @@
 ## Table
 Table taken from: https://raw.githubusercontent.com/trailofbits/evm-opcodes/master/README.md
 
-| Opcode | Name | Description | Extra Info | Gas | Inplemented |
+In the description of each instruction I might be using Stack[X] where X is a
+uint. Stack[0] is the latest pushed value, Stack[1] is right below.
+
+
+| Opcode | Name | Description | Extra Info | Gas | Inplemented | Description |
 | --- | --- | --- | --- | --- | --- |
 | `0x00` | STOP | Halts execution | - | 0 | |
-| `0x01` | ADD | Addition operation | - | 3 | X |
-| `0x02` | MUL | Multiplication operation | - | 5 | |
-| `0x03` | SUB | Subtraction operation | - | 3 | X |
-| `0x04` | DIV | Integer division operation | - | 5 | |
+| `0x01` | ADD | Addition operation | - | 3 | X | Stack[0] + Stack[1] |
+| `0x02` | MUL | Multiplication operation | - | 5 | X | Stack[0] * Stack[1] |
+| `0x03` | SUB | Subtraction operation | - | 3 | X | Stack[0] - Stack[1] |
+| `0x04` | DIV | Integer division operation | - | 5 | X| Stack[0] / Stack[1] |
 | `0x05` | SDIV | Signed integer division operation (truncated) | - | 5 | |
 | `0x06` | MOD | Modulo remainder operation | - | 5 | |
 | `0x07` | SMOD | Signed modulo remainder operation | - | 5 | |
@@ -61,44 +65,44 @@ Table taken from: https://raw.githubusercontent.com/trailofbits/evm-opcodes/mast
 | `0x54` | SLOAD | Load word from storage | - | 200 | |
 | `0x55` | SSTORE | Save word to storage | - | 20000** | |
 | `0x56` | JUMP | Alter the program counter | - | 8 | |
-| `0x57` | JUMPI | Conditionally alter the program counter | - | 10 | |
+| `0x57` | JUMPI | Conditionally alter the program counter | - | 10 | | Set PC to Stack[0] if Stack[1] != 0 |
 | `0x58` | GETPC | Get the value of the program counter prior to the increment | - | 2 | |
 | `0x59` | MSIZE | Get the size of active memory in bytes | - | 2 | |
 | `0x5a` | GAS | Get the amount of available gas, including the corresponding reduction the amount of available gas | - | 2 | |
 | `0x5b` | JUMPDEST | Mark a valid destination fo jumps | - | 1 | |
 | `0x5c` - `0x5f` | Unused | - | |
-| `0x60` | PUSH1 | Place 1 byte item on stack | - | 3 | X |
-| `0x61` | PUSH2 | Place 2-byte item on stack | - | 3 | X |
-| `0x62` | PUSH3 | Place 3-byte item on stack | - | 3 | X |
-| `0x63` | PUSH4 | Place 4-byte item on stack | - | 3 | X |
-| `0x64` | PUSH5 | Place 5-byte item on stack | - | 3 | X |
-| `0x65` | PUSH6 | Place 6-byte item on stack | - | 3 | X |
-| `0x66` | PUSH7 | Place 7-byte item on stack | - | 3 | X |
-| `0x67` | PUSH8 | Place 8-byte item on stack | - | 3 | X |
-| `0x68` | PUSH9 | Place 9-byte item on stack | - | 3 | X |
-| `0x69` | PUSH10 | Place 10-byte item on stack | - | 3 | X |
-| `0x6a` | PUSH11 | Place 11-byte item on stack | - | 3 | X |
-| `0x6b` | PUSH12 | Place 12-byte item on stack | - | 3 | X |
-| `0x6c` | PUSH13 | Place 13-byte item on stack | - | 3 | X |
-| `0x6d` | PUSH14 | Place 14-byte item on stack | - | 3 | X |
-| `0x6e` | PUSH15 | Place 15-byte item on stack | - | 3 | X |
-| `0x6f` | PUSH16 | Place 16-byte item on stack | - | 3 | X |
-| `0x70` | PUSH17 | Place 17-byte item on stack | - | 3 | X |
-| `0x71` | PUSH18 | Place 18-byte item on stack | - | 3 | X |
-| `0x72` | PUSH19 | Place 19-byte item on stack | - | 3 | X |
-| `0x73` | PUSH20 | Place 20-byte item on stack | - | 3 | X |
-| `0x74` | PUSH21 | Place 21-byte item on stack | - | 3 | X |
-| `0x75` | PUSH22 | Place 22-byte item on stack | - | 3 | X |
-| `0x76` | PUSH23 | Place 23-byte item on stack | - | 3 | X |
-| `0x77` | PUSH24 | Place 24-byte item on stack | - | 3 | X |
-| `0x78` | PUSH25 | Place 25-byte item on stack | - | 3 | X |
-| `0x79` | PUSH26 | Place 26-byte item on stack | - | 3 | X |
-| `0x7a` | PUSH27 | Place 27-byte item on stack | - | 3 | X |
-| `0x7b` | PUSH28 | Place 28-byte item on stack | - | 3 | X |
-| `0x7c` | PUSH29 | Place 29-byte item on stack | - | 3 | X |
-| `0x7d` | PUSH30 | Place 30-byte item on stack | - | 3 | X |
-| `0x7e` | PUSH31 | Place 31-byte item on stack | - | 3 | X |
-| `0x7f` | PUSH32 | Place 32-byte (full word) item on stack | - |  3 |  X |
+| `0x60` | PUSH1 | Place 1 byte item on stack | - | 3 | X | Push 1 byte on stack |
+| `0x61` | PUSH2 | Place 2-byte item on stack | - | 3 | X | Push 2 byte on stack |
+| `0x62` | PUSH3 | Place 3-byte item on stack | - | 3 | X | Push 3 byte on stack |
+| `0x63` | PUSH4 | Place 4-byte item on stack | - | 3 | X | Push 4 byte on stack |
+| `0x64` | PUSH5 | Place 5-byte item on stack | - | 3 | X | Push 5 byte on stack |
+| `0x65` | PUSH6 | Place 6-byte item on stack | - | 3 | X | Push 6 byte on stack |
+| `0x66` | PUSH7 | Place 7-byte item on stack | - | 3 | X | Push 7 byte on stack |
+| `0x67` | PUSH8 | Place 8-byte item on stack | - | 3 | X | Push 8 byte on stack |
+| `0x68` | PUSH9 | Place 9-byte item on stack | - | 3 | X | Push 9 byte on stack |
+| `0x69` | PUSH10 | Place 10-byte item on stack | - | 3 | X | Push 10 byte on stack |
+| `0x6a` | PUSH11 | Place 11-byte item on stack | - | 3 | X | Push 11 byte on stack |
+| `0x6b` | PUSH12 | Place 12-byte item on stack | - | 3 | X | Push 12 byte on stack |
+| `0x6c` | PUSH13 | Place 13-byte item on stack | - | 3 | X | Push 13 byte on stack |
+| `0x6d` | PUSH14 | Place 14-byte item on stack | - | 3 | X | Push 14 byte on stack |
+| `0x6e` | PUSH15 | Place 15-byte item on stack | - | 3 | X | Push 15 byte on stack |
+| `0x6f` | PUSH16 | Place 16-byte item on stack | - | 3 | X | Push 16 byte on stack |
+| `0x70` | PUSH17 | Place 17-byte item on stack | - | 3 | X | Push 17 byte on stack |
+| `0x71` | PUSH18 | Place 18-byte item on stack | - | 3 | X | Push 18 byte on stack |
+| `0x72` | PUSH19 | Place 19-byte item on stack | - | 3 | X | Push 19 byte on stack |
+| `0x73` | PUSH20 | Place 20-byte item on stack | - | 3 | X | Push 20 byte on stack |
+| `0x74` | PUSH21 | Place 21-byte item on stack | - | 3 | X | Push 21 byte on stack |
+| `0x75` | PUSH22 | Place 22-byte item on stack | - | 3 | X | Push 22 byte on stack |
+| `0x76` | PUSH23 | Place 23-byte item on stack | - | 3 | X | Push 23 byte on stack |
+| `0x77` | PUSH24 | Place 24-byte item on stack | - | 3 | X | Push 24 byte on stack |
+| `0x78` | PUSH25 | Place 25-byte item on stack | - | 3 | X | Push 25 byte on stack |
+| `0x79` | PUSH26 | Place 26-byte item on stack | - | 3 | X | Push 26 byte on stack |
+| `0x7a` | PUSH27 | Place 27-byte item on stack | - | 3 | X | Push 27 byte on stack |
+| `0x7b` | PUSH28 | Place 28-byte item on stack | - | 3 | X | Push 28 byte on stack |
+| `0x7c` | PUSH29 | Place 29-byte item on stack | - | 3 | X | Push 29 byte on stack |
+| `0x7d` | PUSH30 | Place 30-byte item on stack | - | 3 | X | Push 30 byte on stack |
+| `0x7e` | PUSH31 | Place 31-byte item on stack | - | 3 | X | Push 31 byte on stack |
+| `0x7f` | PUSH32 | Place 32-byte (full word) item on stack | - |  3 |  X |  Push 32 byte on stack |
 | `0x80` | DUP1 | Duplicate 1st stack item | - |  3 | |
 | `0x81` | DUP2 | Duplicate 2nd stack item | - | 3 | |
 | `0x82` | DUP3 | Duplicate 3rd stack item | - | 3 | |
