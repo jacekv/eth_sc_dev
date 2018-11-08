@@ -18,6 +18,7 @@ class EVM(object):
         self.stack = Stack()
         self.memory = Memory()
 
+
     def setCode(self, code):
         """
         Sets the code to be executed.
@@ -52,12 +53,8 @@ class EVM(object):
         self.programCounter = 0
         while self.programCounter < len(self.code):
             opcode = int(self.code[self.programCounter][:2], 16)
-            if opcode == 0x01:
-                #we have a ADD opcode
-                self.add()
-            elif opcode == 0x03:
-                #we have a ADD opcode
-                self.sub()
+            if opcode >= 0x01 and opcode <= 0x0a:
+                self.simpleArithmetic(opcode)
             elif opcode >= 0x60 and opcode <= 0x7F:
                 #we have a push opcode, so we push the next value
                 self.push(self.code[self.programCounter][2:])
@@ -87,28 +84,30 @@ class EVM(object):
             throw ('Invalid opcode')
         self.stack.push(value)
 
-    def add(self):
+    def simpleArithmetic(self, operation):
         """
-        Adds the top 2 values on the stack and pushes the result back onto
-        the stack.
-        """
-        w1 = self.stack.pop()
-        w2 = self.stack.pop()
-        w3 = int(w1.getWord(), 16) + int(w2.getWord(), 16)
-        self.stack.push(w3)
+        Performs simole arithemtic functions using two values from the stack.
 
-    def sub(self):
+        Args:
+            operation: The arithmetic operation to perform
         """
-        Subtracts the top 2 values on the stack from each other and pushes the
-        result back onto the stack.
-        """
-        w1 = self.stack.pop()
-        w2 = self.stack.pop()
-        w3 = int(w1.getWord(), 16) - int(w2.getWord(), 16)
-        self.stack.push(w3)
+        v1 = int(self.stack.pop().getWord(), 16)
+        v2 = int(self.stack.pop().getWord(), 16)
+        if operation == 0x01:
+            v3 = v1 + v2
+        elif operation == 0x02:
+            v3 = v1 * v2
+        elif operation == 0x03:
+            v3 = v1 - v2
+        elif operation == 0x05:
+            #we don't check if v2 is zero. Solidity should compile in such a way
+            #that it checks :)
+            v3 = v1 / v2
+        self.stack.push(v3)
+
 
 if __name__ == "__main__":
     #code = 'PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x8E DUP1 PUSH2 0x1E PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH1 0x3F JUMPI PUSH1 0x0 CALLDATALOAD PUSH29 0x100000000000000000000000000000000000000000000000000000000 SWAP1 DIV PUSH4 0xFFFFFFFF AND DUP1 PUSH4 0xF8A8FD6D EQ PUSH1 0x44 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST CALLVALUE DUP1 ISZERO PUSH1 0x4F JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x56 PUSH1 0x58 JUMP JUMPDEST STOP JUMPDEST PUSH1 0x2 PUSH1 0x0 DUP2 SWAP1 SSTORE POP JUMP STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 0xbb PUSH12 0x4D348508D72D3271A8A5EA59 0xb6 DUP6 PUSH22 0x3AEDBDB8A82E100AE8BD71A9A16AFA00290000000000'
-    code = '6411223344556677889900'
+    code = '603361334403'
     e = EVM(code)
     e.executeCode()
