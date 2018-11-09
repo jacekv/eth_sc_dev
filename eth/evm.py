@@ -32,7 +32,7 @@ class EVM(object):
             inst = int(code[pos:pos+2], 16)
             length = 2
 
-            if inst >= 0x01 and inst <= 0x0A:
+            if inst >= 0x01 and inst <= 0x14:
                 #add, sub, mul,... everything without a following paramter
                 #but works directly with the stack
                 codeSplitted.append(code[pos:pos+length])
@@ -53,7 +53,7 @@ class EVM(object):
         self.programCounter = 0
         while self.programCounter < len(self.code):
             opcode = int(self.code[self.programCounter][:2], 16)
-            if opcode >= 0x01 and opcode <= 0x0a:
+            if opcode >= 0x01 and opcode <= 0x14:
                 self.simpleArithmetic(opcode)
             elif opcode >= 0x60 and opcode <= 0x7F:
                 #we have a push opcode, so we push the next value
@@ -94,15 +94,28 @@ class EVM(object):
         v1 = int(self.stack.pop().getWord(), 16)
         v2 = int(self.stack.pop().getWord(), 16)
         if operation == 0x01:
+            #ADD
             v3 = v1 + v2
         elif operation == 0x02:
+            #MUL
             v3 = v1 * v2
         elif operation == 0x03:
+            #SUB
             v3 = v1 - v2
         elif operation == 0x05:
+            #DIV
             #we don't check if v2 is zero. Solidity should compile in such a way
             #that it checks :)
-            v3 = v1 / v2
+            v3 = int(v1 / v2)
+        elif operation == 0x10:
+            #LT
+            v3 = 1 if v1 < v2 else 0
+        elif operation == 0x11:
+            #GT
+            v3 = 1 if v1 > v2 else 0
+        elif operation == 0x14:
+            #EQ
+            v3 = 1 if v1 == v2 else 0
         self.stack.push(v3)
 
 

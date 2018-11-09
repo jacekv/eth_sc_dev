@@ -47,6 +47,41 @@ class EVMArithmeticTest(unittest.TestCase):
         self.evm.executeCode()
         self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x101)
 
+    def testLtTrue(self):
+        code = '603361334510'
+        self.evm.setCode(code)
+        self.evm.executeCode()
+        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x0)
+
+    def testLtFalse(self):
+        code = '613345603310'
+        self.evm.setCode(code)
+        self.evm.executeCode()
+        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x01)
+
+    def testGtTrue(self):
+        code = '603361334511'
+        self.evm.setCode(code)
+        self.evm.executeCode()
+        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x01)
+
+    def testGtFalse(self):
+        code = '613345603311'
+        self.evm.setCode(code)
+        self.evm.executeCode()
+        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x0)
+
+    def testEqFalse(self):
+        code = '613345603314'
+        self.evm.setCode(code)
+        self.evm.executeCode()
+        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x0)
+
+    def testEqTrue(self):
+        code = '6033603314'
+        self.evm.setCode(code)
+        self.evm.executeCode()
+        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x01)
 
     def runTest(self):
         methods = dir(self)
