@@ -25,63 +25,104 @@ class EVMArithmeticTest(unittest.TestCase):
 
     def testAddition(self):
         code = '603361334401'
-        self.evm.setCode(code)
-        self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x3377)
+        self.execCode(code, 0x3377)
 
     def testMultiplication(self):
         code = '603361334402'
-        self.evm.setCode(code)
-        self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0xA368C)
+        self.execCode(code, 0xA368C)
 
     def testSubstraction(self):
         code = '603361334403'
-        self.evm.setCode(code)
-        self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x3311)
+        self.execCode(code, 0x3311)
 
     def testDivisionNonZero(self):
         code = '603361334505'
-        self.evm.setCode(code)
-        self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x101)
+        self.execCode(code, 0x101)
+
+    def testMod(self):
+        code = '6022603306'
+        self.execCode(code, 0x11)
+
+    def testSMod1(self):
+        code = '6003606407'
+        self.execCode(code, 0x01)
+
+    def testSMod2(self):
+        #pushing -3 and 100 onto the stack
+        code = '7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd606407'
+        self.execCode(code, 0x01)
+
+    def testSMod3(self):
+        #pushing 3 and -100 onto the stack
+        code = '60037Fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9c07'
+        self.execCode(code, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
+
+    def testSMod4(self):
+        #pushing -3 and -100 onto the stack
+        code = '7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd7Fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9c07'
+        self.execCode(code, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
 
     def testLtTrue(self):
         code = '603361334510'
-        self.evm.setCode(code)
-        self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x0)
+        self.execCode(code, 0x0)
 
     def testLtFalse(self):
         code = '613345603310'
-        self.evm.setCode(code)
-        self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x01)
+        self.execCode(code, 0x01)
 
     def testGtTrue(self):
         code = '603361334511'
-        self.evm.setCode(code)
-        self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x01)
+        self.execCode(code, 0x01)
 
     def testGtFalse(self):
         code = '613345603311'
-        self.evm.setCode(code)
-        self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x0)
+        self.execCode(code, 0x0)
+
+    def testSltTrue1(self):
+        code = '7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd12'
+        self.execCode(code, 0x01)
+
+    def testSltTrue2(self):
+        code = '60337Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd12'
+        self.execCode(code, 0x01)
+
+    def testSltFalse1(self):
+        code = '7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe12'
+        self.execCode(code, 0x0)
+
+    def testSltFalse2(self):
+        code = '7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd603312'
+        self.execCode(code, 0x0)
+
+    def testSgtTrue1(self):
+        code = '7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe13'
+        self.execCode(code, 0x01)
+
+    def testSgtTrue2(self):
+        code = '7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd603313'
+        self.execCode(code, 0x01)
+
+    def testSgtFalse1(self):
+        code = '7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd13'
+        self.execCode(code, 0x0)
+
+    def testSgtFalse2(self):
+        code = '60337Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd13'
+        self.execCode(code, 0x0)
 
     def testEqFalse(self):
         code = '613345603314'
-        self.evm.setCode(code)
-        self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x0)
+        self.execCode(code, 0x0)
 
     def testEqTrue(self):
         code = '6033603314'
+        self.execCode(code, 0x01)
+
+    def execCode(self, code, assertValue):
         self.evm.setCode(code)
         self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x01)
+        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), assertValue)
+
 
     def runTest(self):
         methods = dir(self)

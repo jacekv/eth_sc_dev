@@ -9,16 +9,16 @@ means that the value is poped from the stack and using during the operation.
 Stack[0] = Stack[0] + Stack[1] means that the values from Stack[0] and Stack[1]
 are poped, added and the result is pushed back on the stack.
 
-| Opcode | Name | Description | Extra Info | Gas | Inplemented | Description |
+| Opcode | Name | Description | Extra Info | Gas | Implemented | Description |
 | --- | --- | --- | --- | --- | --- |
-| `0x00` | STOP | Halts execution | - | 0 | |
+| `0x00` | STOP | Halts execution | - | 0 | X | |
 | `0x01` | ADD | Addition operation | - | 3 | X | Stack[0] = Stack[0] + Stack[1] |
 | `0x02` | MUL | Multiplication operation | - | 5 | X | Stack[0] = Stack[0] * Stack[1] |
 | `0x03` | SUB | Subtraction operation | - | 3 | X | Stack[0] = Stack[0] - Stack[1] |
 | `0x04` | DIV | Integer division operation | - | 5 | X | Stack[0] = Stack[0] / Stack[1] |
 | `0x05` | SDIV | Signed integer division operation (truncated) | - | 5 | |
-| `0x06` | MOD | Modulo remainder operation | - | 5 | |
-| `0x07` | SMOD | Signed modulo remainder operation | - | 5 | |
+| `0x06` | MOD | Modulo remainder operation | - | 5 | X | Stack[0] = Stack[0] % Stack[1] |
+| `0x07` | SMOD | Signed modulo remainder operation | - | 5 | X | Stack[0] = Stack[0] % Stack[1] |
 | `0x08` | ADDMOD | Modulo addition operation | - | 8 | |
 | `0x09` | MULMOD | Modulo multiplication operation | - | 8 | |
 | `0x0a` | EXP | Exponential operation | - | 10* | |
@@ -26,13 +26,13 @@ are poped, added and the result is pushed back on the stack.
 | `0x0c` - `0x0f` | Unused | Unused | - | |
 | `0x10` | LT | Less-than comparison | - | 3 | X | Stack[0] = Stack[0] < Stack[1] |
 | `0x11` | GT | Greater-than comparison | - | 3 | X | Stack[0] = Stack[0] > Stack[1] |
-| `0x12` | SLT | Signed less-than comparison | - | 3 | |
-| `0x13` | SGT | Signed greater-than comparison | - | 3 | |
-| `0x14` | EQ | Equality comparison | - | 3 | | Stack[0] = Stack[0] == Stack[1] |
-| `0x15` | ISZERO | Simple not operator | - | 3 | |
-| `0x16` | AND | Bitwise AND operation | - | 3 | |
-| `0x17` | OR | Bitwise OR operation | - | 3 | |
-| `0x18` | XOR | Bitwise XOR operation | - | 3 | |
+| `0x12` | SLT | Signed less-than comparison | - | 3 | X | Stack[0] = Stack[0] < Stack[1] |
+| `0x13` | SGT | Signed greater-than comparison | - | 3 | X | Stack[0] = Stack[0] > Stack[1] |
+| `0x14` | EQ | Equality comparison | - | 3 | X | Stack[0] = Stack[0] == Stack[1] |
+| `0x15` | ISZERO | Simple not operator | - | 3 | X | Stack[0] = 1 if Stack[0] == 0, else 0 |
+| `0x16` | AND | Bitwise AND operation | - | 3 | X | Stack[0] = Stack[0] AND STACK[1] |
+| `0x17` | OR | Bitwise OR operation | - | 3 | X | Stack[0] = Stack[0] OR STACK[1] |
+| `0x18` | XOR | Bitwise XOR operation | - | 3 | X | Stack[0] = Stack[0] XOR STACK[1] |
 | `0x19` | NOT | Bitwise NOT operation | - | 3 | |
 | `0x1a` | BYTE | Retrieve single byte from word | - | 3 | |
 | `0x20` | SHA3 | Compute Keccak-256 hash | - | 30* | |
