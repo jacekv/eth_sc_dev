@@ -10,7 +10,7 @@ Stack[0] = Stack[0] + Stack[1] means that the values from Stack[0] and Stack[1]
 are poped, added and the result is pushed back on the stack.
 
 | Opcode | Name | Description | Extra Info | Gas | Implemented | Description |
-| --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- |
 | `0x00` | STOP | Halts execution | - | 0 | X | |
 | `0x01` | ADD | Addition operation | - | 3 | X | Stack[0] = Stack[0] + Stack[1] |
 | `0x02` | MUL | Multiplication operation | - | 5 | X | Stack[0] = Stack[0] * Stack[1] |
@@ -19,8 +19,8 @@ are poped, added and the result is pushed back on the stack.
 | `0x05` | SDIV | Signed integer division operation (truncated) | - | 5 | |
 | `0x06` | MOD | Modulo remainder operation | - | 5 | X | Stack[0] = Stack[0] % Stack[1] |
 | `0x07` | SMOD | Signed modulo remainder operation | - | 5 | X | Stack[0] = Stack[0] % Stack[1] |
-| `0x08` | ADDMOD | Modulo addition operation | - | 8 | |
-| `0x09` | MULMOD | Modulo multiplication operation | - | 8 | |
+| `0x08` | ADDMOD | Modulo addition operation | - | 8 | | |
+| `0x09` | MULMOD | Modulo multiplication operation | - | 8 | | |
 | `0x0a` | EXP | Exponential operation | - | 10* | |
 | `0x0b` | SIGNEXTEND | Extend length of two's complement signed integer | - | 5 | |
 | `0x0c` - `0x0f` | Unused | Unused | - | |
