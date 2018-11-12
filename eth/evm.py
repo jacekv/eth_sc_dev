@@ -61,7 +61,7 @@ class EVM(object):
             elif opcode == 0x15:
                 self.isZero()
             elif opcode >= 0x16 and opcode <= 0x19:
-                self.logicOperations(opcode)
+                self.bitwiseOperations(opcode)
             elif opcode >= 0x60 and opcode <= 0x7F:
                 #we have a push opcode, so we push the next value
                 self.push(self.code[self.programCounter][2:])
@@ -169,9 +169,16 @@ class EVM(object):
         else:
             self.stack.push(0)
 
-    def logicOperations(self, operation):
+    def bitwiseOperations(self, operation):
+        """
+        Contains different bitwise operations, such as AND, OR, XOR and NOT.
+
+        Args:
+            operation: Determines which bitwise function is executed
+        """
         v1 = int(self.stack.pop().getWord(), 16)
-        v2 = int(self.stack.pop().getWord(), 16)
+        if operation != 0x19:
+            v2 = int(self.stack.pop().getWord(), 16)
         if operation == 0x16:
             #AND
             v3 = v1 & v2
@@ -181,6 +188,11 @@ class EVM(object):
         elif operation == 0x18:
             #XOR
             v3 = v1 ^ v2
+        elif operation == 0x19:
+            #NOT
+            #We don't use pythons ~ bc it is for signed integers and we receive
+            #a wrong result
+            v3 = 2**256 - 1 - v1
         self.stack.push(v3)
 
 if __name__ == "__main__":

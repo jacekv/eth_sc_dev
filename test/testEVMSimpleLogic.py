@@ -51,6 +51,10 @@ class EVMLogicTest(unittest.TestCase):
         code = '60037Fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9c18'
         self.execCode(code, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9f)
 
+    def testNot(self):
+        code = '7Fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9c19'
+        self.execCode(code, 0x63)
+
     def execCode(self, code, assertValue):
         self.evm.setCode(code)
         self.evm.executeCode()
