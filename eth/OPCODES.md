@@ -121,22 +121,22 @@ are poped, added and the result is pushed back on the stack.
 | `0x8d` | DUP14 | Duplicate 14th stack item | - | 3 | X | Stack[0] = Stack[14] |
 | `0x8e` | DUP15 | Duplicate 15th stack item | - | 3 | X | Stack[0] = Stack[15] |
 | `0x8f` | DUP16 | Duplicate 16th stack item | - | 3 | X | Stack[0] = Stack[16] |
-| `0x90` | SWAP1 | Exchange 1st and 2nd stack items | - | 3 | |
-| `0x91` | SWAP2 | Exchange 1st and 3rd stack items | - | 3 | |
-| `0x92` | SWAP3 | Exchange 1st and 4th stack items | - | 3 | |
-| `0x93` | SWAP4 | Exchange 1st and 5th stack items | - | 3 | |
-| `0x94` | SWAP5 | Exchange 1st and 6th stack items | - | 3 | |
-| `0x95` | SWAP6 | Exchange 1st and 7th stack items | - | 3 | |
-| `0x96` | SWAP7 | Exchange 1st and 8th stack items | - | 3 | |
-| `0x97` | SWAP8 | Exchange 1st and 9th stack items | - | 3 | |
-| `0x98` | SWAP9 | Exchange 1st and 10th stack items | - | 3 | |
-| `0x99` | SWAP10 | Exchange 1st and 11th stack items | - | 3 | |
-| `0x9a` | SWAP11 | Exchange 1st and 12th stack items | - | 3 | |
-| `0x9b` | SWAP12 | Exchange 1st and 13th stack items | - | 3 | |
-| `0x9c` | SWAP13 | Exchange 1st and 14th stack items | - | 3 | |
-| `0x9d` | SWAP14 | Exchange 1st and 15th stack items | - | 3 | |
-| `0x9e` | SWAP15 | Exchange 1st and 16th stack items | - | 3 | |
-| `0x9f` | SWAP16 | Exchange 1st and 17th stack items | - | 3 | |
+| `0x90` | SWAP1 | Exchange 1st and 2nd stack items | - | 3 | X | Stack[0] <=> Stack[1] |
+| `0x91` | SWAP2 | Exchange 1st and 3rd stack items | - | 3 | X | Stack[0] <=> Stack[2] |
+| `0x92` | SWAP3 | Exchange 1st and 4th stack items | - | 3 | X | Stack[0] <=> Stack[3] |
+| `0x93` | SWAP4 | Exchange 1st and 5th stack items | - | 3 | X | Stack[0] <=> Stack[4] |
+| `0x94` | SWAP5 | Exchange 1st and 6th stack items | - | 3 | X | Stack[0] <=> Stack[5] |
+| `0x95` | SWAP6 | Exchange 1st and 7th stack items | - | 3 | X | Stack[0] <=> Stack[6] |
+| `0x96` | SWAP7 | Exchange 1st and 8th stack items | - | 3 | X | Stack[0] <=> Stack[7] |
+| `0x97` | SWAP8 | Exchange 1st and 9th stack items | - | 3 | X | Stack[0] <=> Stack[8] |
+| `0x98` | SWAP9 | Exchange 1st and 10th stack items | - | 3 | X | Stack[0] <=> Stack[9] |
+| `0x99` | SWAP10 | Exchange 1st and 11th stack items | - | 3 | X | Stack[0] <=> Stack[10] |
+| `0x9a` | SWAP11 | Exchange 1st and 12th stack items | - | 3 | X | Stack[0] <=> Stack[11] |
+| `0x9b` | SWAP12 | Exchange 1st and 13th stack items | - | 3 | X | Stack[0] <=> Stack[12] |
+| `0x9c` | SWAP13 | Exchange 1st and 14th stack items | - | 3 | X | Stack[0] <=> Stack[13] |
+| `0x9d` | SWAP14 | Exchange 1st and 15th stack items | - | 3 | X | Stack[0] <=> Stack[14] |
+| `0x9e` | SWAP15 | Exchange 1st and 16th stack items | - | 3 | X | Stack[0] <=> Stack[15] |
+| `0x9f` | SWAP16 | Exchange 1st and 17th stack items | - | 3 | X | Stack[0] <=> Stack[16] |
 | `0xa0` | LOG0 | Append log record with no topics | - | 375 | |
 | `0xa1` | LOG1 | Append log record with one topic | - | 750 | |
 | `0xa2` | LOG2 | Append log record with two topics | - | 1125 | |
