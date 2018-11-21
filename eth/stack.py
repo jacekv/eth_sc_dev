@@ -70,4 +70,5 @@ class Stack(object):
         """
         loc = self.depth - value
         v = self.stack[loc].getWord()
-        self.push(v)
+        self.push(int(v, 16))
+        self.depth += 1

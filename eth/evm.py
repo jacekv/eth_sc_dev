@@ -37,7 +37,7 @@ class EVM(object):
                 #but works directly with the stack
                 codeSplitted.append(code[pos:pos+length])
             elif inst >= 0x60 and inst <= 0x7F:
-                #here are the push codes
+                #PUSHX opcode
                 length = (inst - 0x60 + 2) * 2
                 codeSplitted.append(code[pos:pos+length])
             elif inst >= 0x80 and inst <= 0x8F:
@@ -51,6 +51,8 @@ class EVM(object):
         The function executes the opcode one by one.
         """
         self.programCounter = 0
+        self.stack = Stack()
+        self.memory = Memory()
         while self.programCounter < len(self.code):
             opcode = int(self.code[self.programCounter][:2], 16)
             if opcode == 0x00:
@@ -87,13 +89,13 @@ class EVM(object):
         Args:
             value: The valueth stack to be duplicated
         """
-        if value < 1 or value > 16:
+        if value < 0 or value > 17:
             throw ('Invalid opcode')
-        self.stack.push(value)
+        self.stack.dup(value + 1)
 
     def simpleArithmetic(self, operation):
         """
-        Performs simole arithemtic functions using two values from the stack.
+        Performs simple arithemtic functions using two values from the stack.
 
         Args:
             operation: The arithmetic operation to perform
