@@ -11,7 +11,7 @@ are poped, added and the result is pushed back on the stack.
 
 | Opcode | Name | Description | Extra Info | Gas | Implemented | Description |
 | --- | --- | --- | --- | --- | --- | --- |
-| `0x00` | STOP | Halts execution | - | 0 | X | |
+| `0x00` | STOP | Halts execution | - | 0 | | |
 | `0x01` | ADD | Addition operation | - | 3 | X | Stack[0] = Stack[0] + Stack[1] |
 | `0x02` | MUL | Multiplication operation | - | 5 | X | Stack[0] = Stack[0] * Stack[1] |
 | `0x03` | SUB | Subtraction operation | - | 3 | X | Stack[0] = Stack[0] - Stack[1] |
@@ -105,22 +105,22 @@ are poped, added and the result is pushed back on the stack.
 | `0x7d` | PUSH30 | Place 30-byte item on stack | - | 3 | X | Push 30 byte on stack |
 | `0x7e` | PUSH31 | Place 31-byte item on stack | - | 3 | X | Push 31 byte on stack |
 | `0x7f` | PUSH32 | Place 32-byte (full word) item on stack | - |  3 |  X |  Push 32 byte on stack |
-| `0x80` | DUP1 | Duplicate 1st stack item | - |  3 | |
-| `0x81` | DUP2 | Duplicate 2nd stack item | - | 3 | |
-| `0x82` | DUP3 | Duplicate 3rd stack item | - | 3 | |
-| `0x83` | DUP4 | Duplicate 4th stack item | - | 3 | |
-| `0x84` | DUP5 | Duplicate 5th stack item | - | 3 | |
-| `0x85` | DUP6 | Duplicate 6th stack item | - | 3 | |
-| `0x86` | DUP7 | Duplicate 7th stack item | - | 3 | |
-| `0x87` | DUP8 | Duplicate 8th stack item | - | 3 | |
-| `0x88` | DUP9 | Duplicate 9th stack item | - | 3 | |
-| `0x89` | DUP10 | Duplicate 10th stack item | - | 3 | |
-| `0x8a` | DUP11 | Duplicate 11th stack item | - | 3 | |
-| `0x8b` | DUP12 | Duplicate 12th stack item | - | 3 | |
-| `0x8c` | DUP13 | Duplicate 13th stack item | - | 3 | |
-| `0x8d` | DUP14 | Duplicate 14th stack item | - | 3 | |
-| `0x8e` | DUP15 | Duplicate 15th stack item | - | 3 | |
-| `0x8f` | DUP16 | Duplicate 16th stack item | - | 3 | |
+| `0x80` | DUP1 | Duplicate 1st stack item | - |  3 | X | Stack[0] = Stack[1] |
+| `0x81` | DUP2 | Duplicate 2nd stack item | - | 3 | X | Stack[0] = Stack[2] |
+| `0x82` | DUP3 | Duplicate 3rd stack item | - | 3 | X | Stack[0] = Stack[3] |
+| `0x83` | DUP4 | Duplicate 4th stack item | - | 3 | X | Stack[0] = Stack[4] |
+| `0x84` | DUP5 | Duplicate 5th stack item | - | 3 | X | Stack[0] = Stack[5] |
+| `0x85` | DUP6 | Duplicate 6th stack item | - | 3 | X | Stack[0] = Stack[6] |
+| `0x86` | DUP7 | Duplicate 7th stack item | - | 3 | X | Stack[0] = Stack[7] |
+| `0x87` | DUP8 | Duplicate 8th stack item | - | 3 | X | Stack[0] = Stack[8] |
+| `0x88` | DUP9 | Duplicate 9th stack item | - | 3 | X | Stack[0] = Stack[9] |
+| `0x89` | DUP10 | Duplicate 10th stack item | - | 3 | X | Stack[0] = Stack[10] |
+| `0x8a` | DUP11 | Duplicate 11th stack item | - | 3 | X | Stack[0] = Stack[11] |
+| `0x8b` | DUP12 | Duplicate 12th stack item | - | 3 | X | Stack[0] = Stack[12] |
+| `0x8c` | DUP13 | Duplicate 13th stack item | - | 3 | X | Stack[0] = Stack[13] |
+| `0x8d` | DUP14 | Duplicate 14th stack item | - | 3 | X | Stack[0] = Stack[14] |
+| `0x8e` | DUP15 | Duplicate 15th stack item | - | 3 | X | Stack[0] = Stack[15] |
+| `0x8f` | DUP16 | Duplicate 16th stack item | - | 3 | X | Stack[0] = Stack[16] |
 | `0x90` | SWAP1 | Exchange 1st and 2nd stack items | - | 3 | |
 | `0x91` | SWAP2 | Exchange 1st and 3rd stack items | - | 3 | |
 | `0x92` | SWAP3 | Exchange 1st and 4th stack items | - | 3 | |
