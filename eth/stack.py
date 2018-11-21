@@ -72,3 +72,14 @@ class Stack(object):
         v = self.stack[loc].getWord()
         self.push(int(v, 16))
         self.depth += 1
+
+    def swap(self, value):
+        """
+        Swaps the 1st stack entry with the valueth stack entry.
+
+        Args:
+            value: Valueth value to be swaped with first stack entry
+        """
+        v = self.stack[(self.depth - value - 1)].getWord()
+        self.stack[(self.depth - value - 1)].setWord(int(self.stack[-1].getWord(), 16))
+        self.stack[-1].setWord(int(v, 16))

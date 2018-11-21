@@ -40,7 +40,7 @@ class EVM(object):
                 #PUSHX opcode
                 length = (inst - 0x60 + 2) * 2
                 codeSplitted.append(code[pos:pos+length])
-            elif inst >= 0x80 and inst <= 0x8F:
+            elif inst >= 0x80 and inst <= 0x9F:
                 #dupX opcode
                 codeSplitted.append(code[pos:pos+length])
             pos += length
@@ -70,6 +70,9 @@ class EVM(object):
             elif opcode >= 0x80 and opcode <= 0x8F:
                 #we have a duplicate, so we duplicate  a value from the stack
                 self.dup(opcode - 0x80)
+            elif opcode >= 0x90 and opcode <= 0x9F:
+                #SWAP opcode
+                self.swap(opcode - 0x90)
             self.programCounter += 1
 
 
@@ -92,6 +95,13 @@ class EVM(object):
         if value < 0 or value > 17:
             throw ('Invalid opcode')
         self.stack.dup(value + 1)
+
+    def swap(self, value):
+        """
+        """
+        if value < 0 or value > 17:
+            throw ('Invalid opcode')
+        self.stack.swap(value + 1)
 
     def simpleArithmetic(self, operation):
         """
