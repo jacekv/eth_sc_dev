@@ -27,6 +27,10 @@ class EVMArithmeticTest(unittest.TestCase):
         code = '603361334401'
         self.execCode(code, 0x3377)
 
+    def testAddOverflow(self):
+        code = '7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff600201'
+        self.execCode(code, 0x02)
+
     def testMultiplication(self):
         code = '603361334402'
         self.execCode(code, 0xA368C)
@@ -61,6 +65,18 @@ class EVMArithmeticTest(unittest.TestCase):
         #pushing -3 and -100 onto the stack
         code = '7Ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd7Fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9c07'
         self.execCode(code, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
+
+    def testAddmod(self):
+        code = '60046007600308'
+        self.execCode(code, 0x02)
+
+    def testAddmod2(self):
+        code = '61033F620181DB62BCCF0108'
+        self.execCode(code, 0x3D)
+
+    def testMulMod(self):
+        code = '60036002600409'
+        self.execCode(code, 0x02)
 
     def testLtTrue(self):
         code = '603361334510'

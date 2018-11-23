@@ -98,6 +98,11 @@ class EVM(object):
 
     def swap(self, value):
         """
+        Swapes the top most stack value with the stack value at given position
+        value.
+
+        Args:
+            value: The valueth stack value to be swaped with the top most value
         """
         if value < 0 or value > 17:
             throw ('Invalid opcode')
@@ -114,10 +119,10 @@ class EVM(object):
         v2 = int(self.stack.pop().getWord(), 16)
         if operation == 0x01:
             #ADD
-            v3 = v1 + v2
+            v3 = self.__add(v1, v2)
         elif operation == 0x02:
             #MUL
-            v3 = v1 * v2
+            v3 = self.__mul(v1, v2)
         elif operation == 0x03:
             #SUB
             v3 = v1 - v2
@@ -138,6 +143,16 @@ class EVM(object):
             v3 = v1 - int(v1 / v2) * v2
             v3 = self.__switchTwoComplement(v3)
             #v3 = self.__switchTwoComplement(v3)
+        elif operation == 0x08:
+            #ADDMOD
+            v3 = self.__add(v1, v2)
+            v1 = int(self.stack.pop().getWord(), 16)
+            v3 = v3 % v1
+        elif operation == 0x09:
+            #MULMOD
+            v3 = self.__mul(v1, v2)
+            v1 = int(self.stack.pop().getWord(), 16)
+            v3 = v3 % v1
         elif operation == 0x10:
             #LT
             v3 = 1 if v1 < v2 else 0
@@ -154,22 +169,6 @@ class EVM(object):
             #EQ
             v3 = 1 if v1 == v2 else 0
         self.stack.push(v3)
-
-    def __switchTwoComplement(self, value):
-        """
-        Switches between the number representation for negative numbers.
-
-        Args:
-            value: An integer, which representation might need to be changed
-
-        Returns:
-            Integer, where the representation might have changed (if needed)
-        """
-        if value & 2**255 == 2**255 and value > 0:
-            return (2**256 - value) * - 1
-        if value < 0:
-            return 2**256 + value
-        return value
 
     def isZero(self):
         """
@@ -206,6 +205,44 @@ class EVM(object):
             #a wrong result
             v3 = 2**256 - 1 - v1
         self.stack.push(v3)
+
+    def __switchTwoComplement(self, value):
+        """
+        Switches between the number representation for negative numbers.
+
+        Args:
+            value: An integer, which representation might need to be changed
+
+        Returns:
+            Integer, where the representation might have changed (if needed)
+        """
+        if value & 2**255 == 2**255 and value > 0:
+            return (2**256 - value) * - 1
+        if value < 0:
+            return 2**256 + value
+        return value
+
+    def __add(self, a, b):
+        """
+        Adds to numbers and doesn't let it become greater then
+        2**256 - 1.
+
+        Args:
+            v1: First value to which to second parameter is added
+            v2: Second value which is added to the first parameter
+        """
+        return (a + b) % 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+
+    def __mul(self, a, b):
+        """
+        Multiplies to numbers and doesn't let it become greater then
+        2**256 - 1.
+
+        Args:
+            v1: First value with which to second parameter is multiplied
+            v2: Second value which is multiplied with the first parameter
+        """
+        return (a * b) % 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 
 if __name__ == "__main__":
     #code = 'PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x8E DUP1 PUSH2 0x1E PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH1 0x3F JUMPI PUSH1 0x0 CALLDATALOAD PUSH29 0x100000000000000000000000000000000000000000000000000000000 SWAP1 DIV PUSH4 0xFFFFFFFF AND DUP1 PUSH4 0xF8A8FD6D EQ PUSH1 0x44 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST CALLVALUE DUP1 ISZERO PUSH1 0x4F JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x56 PUSH1 0x58 JUMP JUMPDEST STOP JUMPDEST PUSH1 0x2 PUSH1 0x0 DUP2 SWAP1 SSTORE POP JUMP STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 0xbb PUSH12 0x4D348508D72D3271A8A5EA59 0xb6 DUP6 PUSH22 0x3AEDBDB8A82E100AE8BD71A9A16AFA00290000000000'
