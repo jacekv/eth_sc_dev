@@ -16,13 +16,13 @@ are poped, added and the result is pushed back on the stack.
 | `0x02` | MUL | Multiplication operation | - | 5 | X | Stack[0] = Stack[0] * Stack[1] |
 | `0x03` | SUB | Subtraction operation | - | 3 | X | Stack[0] = Stack[0] - Stack[1] |
 | `0x04` | DIV | Integer division operation | - | 5 | X | Stack[0] = Stack[0] / Stack[1] |
-| `0x05` | SDIV | Signed integer division operation (truncated) | - | 5 | |
+| `0x05` | SDIV | Signed integer division operation (truncated) | - | 5 | X | Stack[0] = Stack[0] / Stack[1] |
 | `0x06` | MOD | Modulo remainder operation | - | 5 | X | Stack[0] = Stack[0] % Stack[1] |
 | `0x07` | SMOD | Signed modulo remainder operation | - | 5 | X | Stack[0] = Stack[0] % Stack[1] |
 | `0x08` | ADDMOD | Modulo addition operation | - | 8 | | X | Stack[0] = (Stack[0] + Stack[1]) mod Stack[2] |
 | `0x09` | MULMOD | Modulo multiplication operation | - | 8 | X | Stack[0] = (Stack[0] * Stack[1]) mod Stack[2] |
 | `0x0a` | EXP | Exponential operation | - | 10* | |
-| `0x0b` | SIGNEXTEND | Extend length of two's complement signed integer | - | 5 | |
+| `0x0b` | SIGNEXTEND | Extend length of two's complement signed integer | - | 5 | X | |
 | `0x0c` - `0x0f` | Unused | Unused | - | |
 | `0x10` | LT | Less-than comparison | - | 3 | X | Stack[0] = Stack[0] < Stack[1] |
 | `0x11` | GT | Greater-than comparison | - | 3 | X | Stack[0] = Stack[0] > Stack[1] |

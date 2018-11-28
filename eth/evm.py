@@ -5,6 +5,7 @@ import re
 import logging
 
 class EVM(object):
+    modulo = 0x10000000000000000000000000000000000000000000000000000000000000000
 
     def __init__(self, code="", logger=None):
         """
@@ -59,33 +60,33 @@ class EVM(object):
                 #STOP instruction
                 return
             if opcode >= 0x01 and opcode <= 0x14:
-                self.simpleArithmetic(opcode)
+                self.__simpleArithmetic(opcode)
             elif opcode == 0x15:
-                self.isZero()
+                self.__isZero()
             elif opcode >= 0x16 and opcode <= 0x19:
-                self.bitwiseOperations(opcode)
+                self.__bitwiseOperations(opcode)
             elif opcode >= 0x60 and opcode <= 0x7F:
                 #we have a push opcode, so we push the next value
-                self.push(self.code[self.programCounter][2:])
+                self.__push(self.code[self.programCounter][2:])
             elif opcode >= 0x80 and opcode <= 0x8F:
                 #we have a duplicate, so we duplicate  a value from the stack
-                self.dup(opcode - 0x80)
+                self.__dup(opcode - 0x80)
             elif opcode >= 0x90 and opcode <= 0x9F:
                 #SWAP opcode
-                self.swap(opcode - 0x90)
+                self.__swap(opcode - 0x90)
             self.programCounter += 1
 
 
-    def push(self, data):
+    def __push(self, data):
         """
-        The function takes a value and adds it to the stack.
+        The function takes a value and pushes it onto the stack.
 
         Args:
             data: Value to be added to stack
         """
         self.stack.push(int(data, 16))
 
-    def dup(self, value):
+    def __dup(self, value):
         """
         Duplicates a value from the stack.
 
@@ -96,7 +97,7 @@ class EVM(object):
             throw ('Invalid opcode')
         self.stack.dup(value + 1)
 
-    def swap(self, value):
+    def __swap(self, value):
         """
         Swapes the top most stack value with the stack value at given position
         value.
@@ -108,103 +109,114 @@ class EVM(object):
             throw ('Invalid opcode')
         self.stack.swap(value + 1)
 
-    def simpleArithmetic(self, operation):
+    def __simpleArithmetic(self, operation):
         """
         Performs simple arithemtic functions using two values from the stack.
 
         Args:
             operation: The arithmetic operation to perform
         """
-        v1 = int(self.stack.pop().getWord(), 16)
-        v2 = int(self.stack.pop().getWord(), 16)
+        s0 = int(self.stack.pop().getWord(), 16)
+        s1 = int(self.stack.pop().getWord(), 16)
         if operation == 0x01:
             #ADD
-            v3 = self.__add(v1, v2)
+            s2 = self.__add(s0, s1)
         elif operation == 0x02:
             #MUL
-            v3 = self.__mul(v1, v2)
+            s2 = self.__mul(s0, s1)
         elif operation == 0x03:
             #SUB
-            v3 = v1 - v2
-        elif operation == 0x05:
+            s2 = self.__sub(s0, s1)
+        elif operation == 0x04:
             #DIV
-            #we don't check if v2 is zero. Solidity should compile in such a way
+            s2 = 0 if s1 == 0 else int(s0 / s1)
+        elif operation == 0x05:
+            #SDIV
+            #we don't check if s1 is zero. Solidity should compile in such a way
             #that it checks :)
-            v3 = int(v1 / v2)
+            s2 = int(s0 / s1)
         elif operation == 0x06:
             #MOD
-            v3 = v1 % v2
+            s2 = 0 if s1 == 0 else s0 % s1
         elif operation == 0x07:
             #SMOD
-            v1 = self.__switchTwoComplement(v1)
-            v2 = self.__switchTwoComplement(v2)
+            s0 = self.__switchTwoComplement(s0)
+            s1 = self.__switchTwoComplement(s1)
             #based on this formula, (a/b)*b + a%b, we determine if the
             #reminder is negative or not
-            v3 = v1 - int(v1 / v2) * v2
-            v3 = self.__switchTwoComplement(v3)
-            #v3 = self.__switchTwoComplement(v3)
+            s2 = s0 - int(s0 / s1) * s1
+            s2 = self.__switchTwoComplement(s2)
+            #s2 = self.__switchTwoComplement(s2)
         elif operation == 0x08:
             #ADDMOD
-            v3 = self.__add(v1, v2)
-            v1 = int(self.stack.pop().getWord(), 16)
-            v3 = v3 % v1
+            s2 = int(self.stack.pop().getWord(), 16)
+            s2 = 0 if s2 == 0 else (self.__add(s0, s1)) % s2
+            #s2 = self.__add(s0, s1)
+            #s0 = int(self.stack.pop().getWord(), 16)
+            #s2 = s2 % s0
         elif operation == 0x09:
             #MULMOD
-            v3 = self.__mul(v1, v2)
-            v1 = int(self.stack.pop().getWord(), 16)
-            v3 = v3 % v1
+            s2 = int(self.stack.pop().getWord(), 16)
+            s2 = 0 if s2 == 0 else (self.__mul(s0, s1)) % s2
+            #s2 = self.__mul(s0, s1)
+            #s0 = int(self.stack.pop().getWord(), 16)
+            #s2 = s2 % s0
+        elif operation == 0x0A:
+            #EXP
+            s2 = self.__power(s0, s1)
+        elif operation == 0x0B:
+            #SIGNEXTEND
+            s2 = self.__signextend(s0, s1)
         elif operation == 0x10:
             #LT
-            v3 = 1 if v1 < v2 else 0
+            s2 = 1 if s0 < s1 else 0
         elif operation == 0x11:
             #GT
-            v3 = 1 if v1 > v2 else 0
+            s2 = 1 if s0 > s1 else 0
         elif operation == 0x12:
             #SLT
-            v3 = 1 if self.__switchTwoComplement(v1) < self.__switchTwoComplement(v2) else 0
+            s2 = 1 if self.__switchTwoComplement(s0) < self.__switchTwoComplement(s1) else 0
         elif operation == 0x13:
             #SGT
-            v3 = 1 if self.__switchTwoComplement(v1) > self.__switchTwoComplement(v2) else 0
+            s2 = 1 if self.__switchTwoComplement(s0) > self.__switchTwoComplement(s1) else 0
         elif operation == 0x14:
             #EQ
-            v3 = 1 if v1 == v2 else 0
-        self.stack.push(v3)
+            s2 = 1 if s0 == s1 else 0
+        self.stack.push(s2)
 
-    def isZero(self):
+    def __isZero(self):
         """
         Checks if the value on the stack is zero or not.
         """
-        v1 = int(self.stack.pop().getWord(), 16)
-        if v1 == 0:
-            self.stack.push(1)
-        else:
-            self.stack.push(0)
+        s0 = int(self.stack.pop().getWord(), 16)
+        s0 = 1 if s0 == 0 else 0
+        self.stack.push(s0)
 
-    def bitwiseOperations(self, operation):
+    def __bitwiseOperations(self, operation):
         """
         Contains different bitwise operations, such as AND, OR, XOR and NOT.
 
         Args:
             operation: Determines which bitwise function is executed
         """
-        v1 = int(self.stack.pop().getWord(), 16)
+        s0 = int(self.stack.pop().getWord(), 16)
         if operation != 0x19:
-            v2 = int(self.stack.pop().getWord(), 16)
+            s1 = int(self.stack.pop().getWord(), 16)
         if operation == 0x16:
             #AND
-            v3 = v1 & v2
+            s2 = s0 & s1
         elif operation == 0x17:
             #OR
-            v3 = v1 | v2
+            s2 = s0 | s1
         elif operation == 0x18:
             #XOR
-            v3 = v1 ^ v2
+            s2 = s0 ^ s1
         elif operation == 0x19:
             #NOT
             #We don't use pythons ~ bc it is for signed integers and we receive
             #a wrong result
-            v3 = 2**256 - 1 - v1
-        self.stack.push(v3)
+            s2 = 2**256 - 1 - s0
+        self.stack.push(s2)
 
     def __switchTwoComplement(self, value):
         """
@@ -225,24 +237,62 @@ class EVM(object):
     def __add(self, a, b):
         """
         Adds to numbers and doesn't let it become greater then
-        2**256 - 1.
+        2**256.
 
         Args:
-            v1: First value to which to second parameter is added
-            v2: Second value which is added to the first parameter
+            a: First value to which to second parameter is added
+            b: Second value which is added to the first parameter
         """
-        return (a + b) % 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+        return (a + b) % self.modulo
 
     def __mul(self, a, b):
         """
-        Multiplies to numbers and doesn't let it become greater then
-        2**256 - 1.
+        Multiplies to numbers and doesn't let it become greater then 2**256.
 
         Args:
-            v1: First value with which to second parameter is multiplied
-            v2: Second value which is multiplied with the first parameter
+            a: First value with which to second parameter is multiplied
+            b: Second value which is multiplied with the first parameter
         """
-        return (a * b) % 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+        return (a * b) % self.modulo
+
+    def __sub(self, a, b):
+        """
+        Subtracts two numbers and doesn't let it become greater then 2**256.
+
+        Args:
+            a: First value from which to second parameter is subtracted from
+            b: Second value which is subtracted from the first parameter
+        """
+        return (a - b) % self.modulo
+
+    def __power(self, a, b):
+        """
+        Calculates a raised to the power of b mod 2**256.
+
+        Args:
+            a: The base of the operation
+            b: The exponent of the operation
+        """
+        return (a ** b) % self.modulo
+
+    def __signextend(self, a, b):
+        """
+        Extends a signed number.
+
+        Args:
+            a: The size of the current value in bytes
+            b: The value to be extended
+        """
+        if a <= 31:
+            testbit = a * 8 + 7
+            signBit = (1 << testbit)
+            if b & signBit:
+                return (b | (2**256 - signBit))
+            else:
+                return (b & (signBit - 1))
+        else:
+            return b
+
 
 if __name__ == "__main__":
     #code = 'PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x8E DUP1 PUSH2 0x1E PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH1 0x3F JUMPI PUSH1 0x0 CALLDATALOAD PUSH29 0x100000000000000000000000000000000000000000000000000000000 SWAP1 DIV PUSH4 0xFFFFFFFF AND DUP1 PUSH4 0xF8A8FD6D EQ PUSH1 0x44 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST CALLVALUE DUP1 ISZERO PUSH1 0x4F JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x56 PUSH1 0x58 JUMP JUMPDEST STOP JUMPDEST PUSH1 0x2 PUSH1 0x0 DUP2 SWAP1 SSTORE POP JUMP STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 0xbb PUSH12 0x4D348508D72D3271A8A5EA59 0xb6 DUP6 PUSH22 0x3AEDBDB8A82E100AE8BD71A9A16AFA00290000000000'

@@ -29,7 +29,7 @@ class EVMArithmeticTest(unittest.TestCase):
 
     def testAddOverflow(self):
         code = '7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff600201'
-        self.execCode(code, 0x02)
+        self.execCode(code, 0x01)
 
     def testMultiplication(self):
         code = '603361334402'
@@ -40,6 +40,10 @@ class EVMArithmeticTest(unittest.TestCase):
         self.execCode(code, 0x3311)
 
     def testDivisionNonZero(self):
+        code = '603361334504'
+        self.execCode(code, 0x101)
+
+    def testSDivisionNonZero(self):
         code = '603361334505'
         self.execCode(code, 0x101)
 
@@ -77,6 +81,18 @@ class EVMArithmeticTest(unittest.TestCase):
     def testMulMod(self):
         code = '60036002600409'
         self.execCode(code, 0x02)
+
+    def testExponentiation(self):
+        code = '600260050A'
+        self.execCode(code, 0x19)
+
+    def testSignextend(self):
+        code = '60FE60000B'
+        self.execCode(code, 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe)
+
+    def testExponentiationOverflow(self):
+        code = '60027F80000000000000000000000000000000000000000000000000000000000000000A'
+        self.execCode(code, 0x00)
 
     def testLtTrue(self):
         code = '603361334510'
