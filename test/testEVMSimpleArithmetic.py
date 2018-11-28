@@ -86,13 +86,13 @@ class EVMArithmeticTest(unittest.TestCase):
         code = '600260050A'
         self.execCode(code, 0x19)
 
-    def testSignextend(self):
-        code = '60FE60000B'
-        self.execCode(code, 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe)
-
     def testExponentiationOverflow(self):
         code = '60027F80000000000000000000000000000000000000000000000000000000000000000A'
         self.execCode(code, 0x00)
+
+    def testSignextend(self):
+        code = '60FE60000B'
+        self.execCode(code, 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe)
 
     def testLtTrue(self):
         code = '603361334510'
