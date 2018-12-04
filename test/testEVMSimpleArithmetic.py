@@ -47,6 +47,10 @@ class EVMArithmeticTest(unittest.TestCase):
         code = '603361334505'
         self.execCode(code, 0x101)
 
+    def testSDivision2NonZero(self):
+        code = '7Fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff606405'
+        self.execCode(code, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9c)
+
     def testMod(self):
         code = '6022603306'
         self.execCode(code, 0x11)
@@ -150,10 +154,18 @@ class EVMArithmeticTest(unittest.TestCase):
         code = '6033603314'
         self.execCode(code, 0x01)
 
+    def testByte(self):
+        code = '7F00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF60{0:02X}1A'
+        value = 0x00
+        for i in range(0, 32):
+            self.execCode(code.format(i), value)
+            value = (value + 0x11) % 0x110
+
+
     def execCode(self, code, assertValue):
         self.evm.setCode(code)
         self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), assertValue)
+        self.assertEqual(self.evm.stack.pop(), assertValue)
 
 
     def runTest(self):

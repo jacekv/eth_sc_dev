@@ -1,0 +1,6 @@
+
+
+UINT256 = 'uint256'
+WORD = 'word'
+
+UINT256VALUE = 2**256

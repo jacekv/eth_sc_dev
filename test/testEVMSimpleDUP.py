@@ -26,7 +26,7 @@ class EVMDupTest(unittest.TestCase):
     def testDup1(self):
         code = '603380'
         self.execCode(code, 0x33)
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0x33)
+        self.assertEqual(self.evm.stack.pop(), 0x33)
 
     def testDup2(self):
         code = '6011602281'
@@ -101,18 +101,18 @@ class EVMDupTest(unittest.TestCase):
     def testDup16(self):
         code = '60116022603360446055606660776088609960AA60BB60CC60DD60EE60FF60FF8F'
         self.execCode(code, 0x11)
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), 0xFF)
+        self.assertEqual(self.evm.stack.pop(), 0xFF)
         self.__checkStackValues(15, 0xFF, 0x11)
 
     def execCode(self, code, assertValue):
         self.evm.setCode(code)
         self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), assertValue)
+        self.assertEqual(self.evm.stack.pop(), assertValue)
 
 
     def __checkStackValues(self, depth, value, decrement):
         for i in range(0, depth):
-            self.assertEqual(int(self.evm.stack.pop().getWord(), 16), value)
+            self.assertEqual(self.evm.stack.pop(), value)
             value -= decrement
 
 

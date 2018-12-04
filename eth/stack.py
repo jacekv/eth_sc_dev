@@ -1,5 +1,6 @@
 from CallStackExceptions import *
 from word import Word
+import constants
 
 class Stack(object):
     limit = 1024
@@ -32,7 +33,7 @@ class Stack(object):
         self.stack.append(entry)
         self.depth += 1
 
-    def pop(self):
+    def pop(self, num_item=1, type=constants.UINT256):
         """
         The function takes the latest value from the stack and returns it.
 
@@ -41,7 +42,10 @@ class Stack(object):
                 or word
         """
         self.depth -= 1
-        return self.stack.pop()
+        if (type == constants.UINT256):
+            return int(self.stack.pop().getWord(), 16)
+        elif (type == constants.WORD):
+            return self.stack.pop().getWord()
 
     def getStack(self):
         """

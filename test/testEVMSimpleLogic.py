@@ -62,7 +62,7 @@ class EVMLogicTest(unittest.TestCase):
     def execCode(self, code, assertValue):
         self.evm.setCode(code)
         self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), assertValue)
+        self.assertEqual(self.evm.stack.pop(), assertValue)
 
 
     def runTest(self):

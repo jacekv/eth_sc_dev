@@ -1,11 +1,14 @@
 from memory import Memory
 from stack import Stack
 from storage import Storage
+
+import logic.arithmetic as arithmetic
 import re
 import logging
+import constants
 
 class EVM(object):
-    modulo = 0x10000000000000000000000000000000000000000000000000000000000000000
+    #modulo = 0x10000000000000000000000000000000000000000000000000000000000000000
 
     def __init__(self, code="", logger=None):
         """
@@ -33,7 +36,7 @@ class EVM(object):
             inst = int(code[pos:pos+2], 16)
             length = 2
 
-            if inst >= 0x01 and inst <= 0x19:
+            if inst >= 0x01 and inst <= 0x1A:
                 #add, sub, mul,... everything without a following paramter
                 #but works directly with the stack
                 codeSplitted.append(code[pos:pos+length])
@@ -63,7 +66,7 @@ class EVM(object):
                 self.__simpleArithmetic(opcode)
             elif opcode == 0x15:
                 self.__isZero()
-            elif opcode >= 0x16 and opcode <= 0x19:
+            elif opcode >= 0x16 and opcode <= 0x1A:
                 self.__bitwiseOperations(opcode)
             elif opcode >= 0x60 and opcode <= 0x7F:
                 #we have a push opcode, so we push the next value
@@ -111,22 +114,22 @@ class EVM(object):
 
     def __simpleArithmetic(self, operation):
         """
-        Performs simple arithemtic functions using two values from the stack.
+        Performs simple arithmetic functions using two values from the stack.
 
         Args:
             operation: The arithmetic operation to perform
         """
-        s0 = int(self.stack.pop().getWord(), 16)
-        s1 = int(self.stack.pop().getWord(), 16)
+        s0 = self.stack.pop()
+        s1 = self.stack.pop()
         if operation == 0x01:
             #ADD
-            s2 = self.__add(s0, s1)
+            s2 = arithmetic.add(s0, s1)#self.__add(s0, s1)
         elif operation == 0x02:
             #MUL
-            s2 = self.__mul(s0, s1)
+            s2 = arithmetic.mul(s0, s1)#self.__mul(s0, s1)
         elif operation == 0x03:
             #SUB
-            s2 = self.__sub(s0, s1)
+            s2 = arithmetic.sub(s0, s1)#self.__sub(s0, s1)
         elif operation == 0x04:
             #DIV
             s2 = 0 if s1 == 0 else int(s0 / s1)
@@ -134,7 +137,10 @@ class EVM(object):
             #SDIV
             #we don't check if s1 is zero. Solidity should compile in such a way
             #that it checks :)
+            s0 = self.__switchTwoComplement(s0)
+            s1 = self.__switchTwoComplement(s1)
             s2 = int(s0 / s1)
+            s2 = self.__switchTwoComplement(s2)
         elif operation == 0x06:
             #MOD
             s2 = 0 if s1 == 0 else s0 % s1
@@ -146,27 +152,20 @@ class EVM(object):
             #reminder is negative or not
             s2 = s0 - int(s0 / s1) * s1
             s2 = self.__switchTwoComplement(s2)
-            #s2 = self.__switchTwoComplement(s2)
         elif operation == 0x08:
             #ADDMOD
-            s2 = int(self.stack.pop().getWord(), 16)
-            s2 = 0 if s2 == 0 else (self.__add(s0, s1)) % s2
-            #s2 = self.__add(s0, s1)
-            #s0 = int(self.stack.pop().getWord(), 16)
-            #s2 = s2 % s0
+            s2 = self.stack.pop()
+            s2 = 0 if s2 == 0 else (arithmetic.add(s0, s1)) % s2
         elif operation == 0x09:
             #MULMOD
-            s2 = int(self.stack.pop().getWord(), 16)
-            s2 = 0 if s2 == 0 else (self.__mul(s0, s1)) % s2
-            #s2 = self.__mul(s0, s1)
-            #s0 = int(self.stack.pop().getWord(), 16)
-            #s2 = s2 % s0
+            s2 = self.stack.pop()
+            s2 = 0 if s2 == 0 else (arithmetic.mul(s0, s1)) % s2
         elif operation == 0x0A:
             #EXP
-            s2 = self.__power(s0, s1)
+            s2 = arithmetic.power(s0, s1)#self.__power(s0, s1)
         elif operation == 0x0B:
             #SIGNEXTEND
-            s2 = self.__signextend(s0, s1)
+            s2 = arithmetic.signextend(s0, s1)#self.__signextend(s0, s1)
         elif operation == 0x10:
             #LT
             s2 = 1 if s0 < s1 else 0
@@ -188,7 +187,7 @@ class EVM(object):
         """
         Checks if the value on the stack is zero or not.
         """
-        s0 = int(self.stack.pop().getWord(), 16)
+        s0 = self.stack.pop()
         s0 = 1 if s0 == 0 else 0
         self.stack.push(s0)
 
@@ -199,9 +198,9 @@ class EVM(object):
         Args:
             operation: Determines which bitwise function is executed
         """
-        s0 = int(self.stack.pop().getWord(), 16)
-        if operation != 0x19:
-            s1 = int(self.stack.pop().getWord(), 16)
+        s0 = self.stack.pop()
+        if operation != 0x19 and operation != 0x1A:
+            s1 = self.stack.pop()
         if operation == 0x16:
             #AND
             s2 = s0 & s1
@@ -216,6 +215,10 @@ class EVM(object):
             #We don't use pythons ~ bc it is for signed integers and we receive
             #a wrong result
             s2 = 2**256 - 1 - s0
+        elif operation == 0x1A:
+            #BYTE
+            s1 = self.stack.pop(type=constants.WORD)
+            s2 = int(s1[s0 * 2: (s0 + 1) * 2], 16) if s0 < 32 else 0
         self.stack.push(s2)
 
     def __switchTwoComplement(self, value):
@@ -228,70 +231,14 @@ class EVM(object):
         Returns:
             Integer, where the representation might have changed (if needed)
         """
+        #check if the bit at position 255 is set
         if value & 2**255 == 2**255 and value > 0:
+            #if yes, the sign bit is set
             return (2**256 - value) * - 1
+        #in case we have a negative value, we make the 2 complement of it
         if value < 0:
             return 2**256 + value
         return value
-
-    def __add(self, a, b):
-        """
-        Adds to numbers and doesn't let it become greater then
-        2**256.
-
-        Args:
-            a: First value to which to second parameter is added
-            b: Second value which is added to the first parameter
-        """
-        return (a + b) % self.modulo
-
-    def __mul(self, a, b):
-        """
-        Multiplies to numbers and doesn't let it become greater then 2**256.
-
-        Args:
-            a: First value with which to second parameter is multiplied
-            b: Second value which is multiplied with the first parameter
-        """
-        return (a * b) % self.modulo
-
-    def __sub(self, a, b):
-        """
-        Subtracts two numbers and doesn't let it become greater then 2**256.
-
-        Args:
-            a: First value from which to second parameter is subtracted from
-            b: Second value which is subtracted from the first parameter
-        """
-        return (a - b) % self.modulo
-
-    def __power(self, a, b):
-        """
-        Calculates a raised to the power of b mod 2**256.
-
-        Args:
-            a: The base of the operation
-            b: The exponent of the operation
-        """
-        return (a ** b) % self.modulo
-
-    def __signextend(self, a, b):
-        """
-        Extends a signed number.
-
-        Args:
-            a: The size of the current value in bytes
-            b: The value to be extended
-        """
-        if a <= 31:
-            testbit = a * 8 + 7
-            signBit = (1 << testbit)
-            if b & signBit:
-                return (b | (2**256 - signBit))
-            else:
-                return (b & (signBit - 1))
-        else:
-            return b
 
 
 if __name__ == "__main__":

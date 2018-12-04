@@ -90,7 +90,7 @@ class EVMSwapTest(unittest.TestCase):
     def execCode(self, code, assertValue, assertValue2):
         self.evm.setCode(code)
         self.evm.executeCode()
-        self.assertEqual(int(self.evm.stack.pop().getWord(), 16), assertValue)
+        self.assertEqual(self.evm.stack.pop(), assertValue)
         self.assertEqual(int(self.evm.stack.getStack()[0].getWord(), 16), assertValue2)
 
 
