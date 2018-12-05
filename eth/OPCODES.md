@@ -34,7 +34,7 @@ are poped, added and the result is pushed back on the stack.
 | `0x17` | OR | Bitwise OR operation | - | 3 | X | Stack[0] = Stack[0] OR STACK[1] |
 | `0x18` | XOR | Bitwise XOR operation | - | 3 | X | Stack[0] = Stack[0] XOR STACK[1] |
 | `0x19` | NOT | Bitwise NOT operation | - | 3 | X | Stack[0] = NOT Stack[0] |
-| `0x1a` | BYTE | Retrieve single byte from word | - | 3 | |
+| `0x1a` | BYTE | Retrieve single byte from word | - | 3 | X |
 | `0x20` | SHA3 | Compute Keccak-256 hash | - | 30* | |
 | `0x21` - `0x2f`| Unused | Unused | |
 | `0x30` | ADDRESS | Get address of currently executing account | - | 2 | |

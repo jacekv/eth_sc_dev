@@ -1,5 +1,10 @@
 import constants
 
+from utils.numeric import (
+    unsigedToSigned,
+    signedToUnsigned
+)
+
 def add(a, b):
     """
     Adds to numbers and doesn't let it become greater then
@@ -64,9 +69,9 @@ def sdiv(a, b):
     Returns:
         Result of a / b
     """
-    a = __twoComplement(a)
-    b = __twoComplement(b)
-    return __twoComplement(div(a, b))
+    a = unsigedToSigned(a)
+    b = unsigedToSigned(b)
+    return signedToUnsigned(div(a, b))
 
 def mod(a, b):
     """
@@ -92,8 +97,8 @@ def smod(a, b):
     Returns:
         The reminder of a divided by b
     """
-    a = __twoComplement(a)
-    b = __twoComplement(b)
+    a = unsigedToSigned(a)
+    b = unsigedToSigned(b)
     #based on this formula: (a/b)*b + a%b, we determine if the
     #reminder is negative or not
     return sub(a, mul(div(a, b), b))
@@ -159,23 +164,3 @@ def signextend(a, b):
             return (b & (signBit - 1))
     else:
         return b
-
-
-def __twoComplement(value):
-    """
-    Switches between the number representation for negative numbers.
-
-    Args:
-        value: An integer, which representation might need to be changed
-
-    Returns:
-        Integer, where the representation might have changed (if needed)
-    """
-    #check if the bit at position 255 is set
-    if value & 2**255 == 2**255 and value > 0:
-        #if yes, the sign bit is set
-        return (2**256 - value) * - 1
-    #in case we have a negative value, we make the 2 complement of it
-    if value < 0:
-        return 2**256 + value
-    return value

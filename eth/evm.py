@@ -9,8 +9,7 @@ import logging
 import constants
 
 class EVM(object):
-    #modulo = 0x10000000000000000000000000000000000000000000000000000000000000000
-
+    
     def __init__(self, code="", logger=None):
         """
         The function takes a solidity opcode string and executes each
@@ -198,26 +197,6 @@ class EVM(object):
             #BYTE
             s2 = bitwiseLogic.byte(*self.stack.pop(numItems=2))
         self.stack.push(s2)
-
-    #def __switchTwoComplement(self, value):
-    #    """
-    #    Switches between the number representation for negative numbers.
-#
-#        Args:
-#            value: An integer, which representation might need to be changed
-#
-#        Returns:
-#            Integer, where the representation might have changed (if needed)
-#        """
-#        #check if the bit at position 255 is set
-#        if value & 2**255 == 2**255 and value > 0:
-#            #if yes, the sign bit is set
-#            return (2**256 - value) * - 1
-#        #in case we have a negative value, we make the 2 complement of it
-#        if value < 0:
-#            return 2**256 + value
-#        return value
-
 
 #if __name__ == "__main__":
 #    #code = 'PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x8E DUP1 PUSH2 0x1E PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH1 0x3F JUMPI PUSH1 0x0 CALLDATALOAD PUSH29 0x100000000000000000000000000000000000000000000000000000000 SWAP1 DIV PUSH4 0xFFFFFFFF AND DUP1 PUSH4 0xF8A8FD6D EQ PUSH1 0x44 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST CALLVALUE DUP1 ISZERO PUSH1 0x4F JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x56 PUSH1 0x58 JUMP JUMPDEST STOP JUMPDEST PUSH1 0x2 PUSH1 0x0 DUP2 SWAP1 SSTORE POP JUMP STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 0xbb PUSH12 0x4D348508D72D3271A8A5EA59 0xb6 DUP6 PUSH22 0x3AEDBDB8A82E100AE8BD71A9A16AFA00290000000000'
