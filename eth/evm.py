@@ -3,7 +3,8 @@ from stack import Stack
 from storage import Storage
 
 import logic.arithmetic as arithmetic
-import re
+import logic.bitwiseLogic as bitwiseLogic
+
 import logging
 import constants
 
@@ -62,11 +63,11 @@ class EVM(object):
             if opcode == 0x00:
                 #STOP instruction
                 return
-            if opcode >= 0x01 and opcode <= 0x14:
+            if opcode >= 0x01 and opcode <= 0x0B:
                 self.__simpleArithmetic(opcode)
-            elif opcode == 0x15:
-                self.__isZero()
-            elif opcode >= 0x16 and opcode <= 0x1A:
+            #elif opcode == 0x15:
+            #    self.__isZero()
+            elif opcode >= 0x10 and opcode <= 0x1A:
                 self.__bitwiseOperations(opcode)
             elif opcode >= 0x60 and opcode <= 0x7F:
                 #we have a push opcode, so we push the next value
@@ -119,77 +120,42 @@ class EVM(object):
         Args:
             operation: The arithmetic operation to perform
         """
-        s0 = self.stack.pop()
-        s1 = self.stack.pop()
         if operation == 0x01:
             #ADD
-            s2 = arithmetic.add(s0, s1)#self.__add(s0, s1)
+            s2 = arithmetic.add(*self.stack.pop(numItems=2))
         elif operation == 0x02:
             #MUL
-            s2 = arithmetic.mul(s0, s1)#self.__mul(s0, s1)
+            s2 = arithmetic.mul(*self.stack.pop(numItems=2))
         elif operation == 0x03:
             #SUB
-            s2 = arithmetic.sub(s0, s1)#self.__sub(s0, s1)
+            s2 = arithmetic.sub(*self.stack.pop(numItems=2))
         elif operation == 0x04:
             #DIV
-            s2 = 0 if s1 == 0 else int(s0 / s1)
+            s2 = arithmetic.div(*self.stack.pop(numItems=2))
         elif operation == 0x05:
             #SDIV
-            #we don't check if s1 is zero. Solidity should compile in such a way
-            #that it checks :)
-            s0 = self.__switchTwoComplement(s0)
-            s1 = self.__switchTwoComplement(s1)
-            s2 = int(s0 / s1)
-            s2 = self.__switchTwoComplement(s2)
+            s2 = arithmetic.sdiv(*self.stack.pop(numItems=2))
+            pass
         elif operation == 0x06:
             #MOD
-            s2 = 0 if s1 == 0 else s0 % s1
+            s2 = arithmetic.mod(*self.stack.pop(numItems=2))
         elif operation == 0x07:
             #SMOD
-            s0 = self.__switchTwoComplement(s0)
-            s1 = self.__switchTwoComplement(s1)
-            #based on this formula, (a/b)*b + a%b, we determine if the
-            #reminder is negative or not
-            s2 = s0 - int(s0 / s1) * s1
-            s2 = self.__switchTwoComplement(s2)
+            s2 = arithmetic.smod(*self.stack.pop(numItems=2))
         elif operation == 0x08:
             #ADDMOD
-            s2 = self.stack.pop()
-            s2 = 0 if s2 == 0 else (arithmetic.add(s0, s1)) % s2
+            s2 = arithmetic.addmod(*self.stack.pop(numItems=3))
         elif operation == 0x09:
             #MULMOD
-            s2 = self.stack.pop()
-            s2 = 0 if s2 == 0 else (arithmetic.mul(s0, s1)) % s2
+            s2 = arithmetic.mulmod(*self.stack.pop(numItems=3))
         elif operation == 0x0A:
             #EXP
-            s2 = arithmetic.power(s0, s1)#self.__power(s0, s1)
+            s2 = arithmetic.power(*self.stack.pop(numItems=2))
         elif operation == 0x0B:
             #SIGNEXTEND
-            s2 = arithmetic.signextend(s0, s1)#self.__signextend(s0, s1)
-        elif operation == 0x10:
-            #LT
-            s2 = 1 if s0 < s1 else 0
-        elif operation == 0x11:
-            #GT
-            s2 = 1 if s0 > s1 else 0
-        elif operation == 0x12:
-            #SLT
-            s2 = 1 if self.__switchTwoComplement(s0) < self.__switchTwoComplement(s1) else 0
-        elif operation == 0x13:
-            #SGT
-            s2 = 1 if self.__switchTwoComplement(s0) > self.__switchTwoComplement(s1) else 0
-        elif operation == 0x14:
-            #EQ
-            s2 = 1 if s0 == s1 else 0
+            s2 = arithmetic.signextend(*self.stack.pop(numItems=2))
         self.stack.push(s2)
 
-    def __isZero(self):
-        """
-        Checks if the value on the stack is zero or not.
-        """
-        s0 = self.stack.pop()
-        s0 = 1 if s0 == 0 else 0
-        self.stack.push(s0)
 
     def __bitwiseOperations(self, operation):
         """
@@ -198,51 +164,63 @@ class EVM(object):
         Args:
             operation: Determines which bitwise function is executed
         """
-        s0 = self.stack.pop()
-        if operation != 0x19 and operation != 0x1A:
-            s1 = self.stack.pop()
-        if operation == 0x16:
+        if operation == 0x10:
+            #LT
+            s2 = s2 = bitwiseLogic.lesser(*self.stack.pop(numItems=2))
+        elif operation == 0x11:
+            #GT
+            s2 = bitwiseLogic.greater(*self.stack.pop(numItems=2))
+        elif operation == 0x12:
+            #SLT
+            s2 = bitwiseLogic.signedLesser(*self.stack.pop(numItems=2))
+        elif operation == 0x13:
+            #SGT
+            s2 = bitwiseLogic.signedGreater(*self.stack.pop(numItems=2))
+        elif operation == 0x14:
+            #EQ
+            s2 = bitwiseLogic.equal(*self.stack.pop(numItems=2))
+        elif operation == 0x15:
+            #isZero
+            s2 = bitwiseLogic.isZero(self.stack.pop())
+        elif operation == 0x16:
             #AND
-            s2 = s0 & s1
+            s2 = bitwiseLogic.bitwiseAnd(*self.stack.pop(numItems=2))#s2 = s0 & s1
         elif operation == 0x17:
             #OR
-            s2 = s0 | s1
+            s2 = bitwiseLogic.bitwiseOr(*self.stack.pop(numItems=2))
         elif operation == 0x18:
             #XOR
-            s2 = s0 ^ s1
+            s2 = bitwiseLogic.bitwiseXor(*self.stack.pop(numItems=2))
         elif operation == 0x19:
             #NOT
-            #We don't use pythons ~ bc it is for signed integers and we receive
-            #a wrong result
-            s2 = 2**256 - 1 - s0
+            s2 = bitwiseLogic.bitwiseNot(self.stack.pop())
         elif operation == 0x1A:
             #BYTE
-            s1 = self.stack.pop(type=constants.WORD)
-            s2 = int(s1[s0 * 2: (s0 + 1) * 2], 16) if s0 < 32 else 0
+            s2 = bitwiseLogic.byte(*self.stack.pop(numItems=2))
         self.stack.push(s2)
 
-    def __switchTwoComplement(self, value):
-        """
-        Switches between the number representation for negative numbers.
+    #def __switchTwoComplement(self, value):
+    #    """
+    #    Switches between the number representation for negative numbers.
+#
+#        Args:
+#            value: An integer, which representation might need to be changed
+#
+#        Returns:
+#            Integer, where the representation might have changed (if needed)
+#        """
+#        #check if the bit at position 255 is set
+#        if value & 2**255 == 2**255 and value > 0:
+#            #if yes, the sign bit is set
+#            return (2**256 - value) * - 1
+#        #in case we have a negative value, we make the 2 complement of it
+#        if value < 0:
+#            return 2**256 + value
+#        return value
 
-        Args:
-            value: An integer, which representation might need to be changed
 
-        Returns:
-            Integer, where the representation might have changed (if needed)
-        """
-        #check if the bit at position 255 is set
-        if value & 2**255 == 2**255 and value > 0:
-            #if yes, the sign bit is set
-            return (2**256 - value) * - 1
-        #in case we have a negative value, we make the 2 complement of it
-        if value < 0:
-            return 2**256 + value
-        return value
-
-
-if __name__ == "__main__":
-    #code = 'PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x8E DUP1 PUSH2 0x1E PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH1 0x3F JUMPI PUSH1 0x0 CALLDATALOAD PUSH29 0x100000000000000000000000000000000000000000000000000000000 SWAP1 DIV PUSH4 0xFFFFFFFF AND DUP1 PUSH4 0xF8A8FD6D EQ PUSH1 0x44 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST CALLVALUE DUP1 ISZERO PUSH1 0x4F JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x56 PUSH1 0x58 JUMP JUMPDEST STOP JUMPDEST PUSH1 0x2 PUSH1 0x0 DUP2 SWAP1 SSTORE POP JUMP STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 0xbb PUSH12 0x4D348508D72D3271A8A5EA59 0xb6 DUP6 PUSH22 0x3AEDBDB8A82E100AE8BD71A9A16AFA00290000000000'
-    code = '7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd606407'
-    e = EVM(code)
-    e.executeCode()
+#if __name__ == "__main__":
+#    #code = 'PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x8E DUP1 PUSH2 0x1E PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH1 0x3F JUMPI PUSH1 0x0 CALLDATALOAD PUSH29 0x100000000000000000000000000000000000000000000000000000000 SWAP1 DIV PUSH4 0xFFFFFFFF AND DUP1 PUSH4 0xF8A8FD6D EQ PUSH1 0x44 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST CALLVALUE DUP1 ISZERO PUSH1 0x4F JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x56 PUSH1 0x58 JUMP JUMPDEST STOP JUMPDEST PUSH1 0x2 PUSH1 0x0 DUP2 SWAP1 SSTORE POP JUMP STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 0xbb PUSH12 0x4D348508D72D3271A8A5EA59 0xb6 DUP6 PUSH22 0x3AEDBDB8A82E100AE8BD71A9A16AFA00290000000000'
+#    code = '7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd606407'
+#    e = EVM(code)
+#    e.executeCode()

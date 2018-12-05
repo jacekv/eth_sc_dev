@@ -33,7 +33,7 @@ class Stack(object):
         self.stack.append(entry)
         self.depth += 1
 
-    def pop(self, num_item=1, type=constants.UINT256):
+    def pop(self, numItems=1, type=constants.UINT256):
         """
         The function takes the latest value from the stack and returns it.
 
@@ -41,11 +41,20 @@ class Stack(object):
             int/word: Depending on the bit width of the stack, it returns int
                 or word
         """
-        self.depth -= 1
-        if (type == constants.UINT256):
-            return int(self.stack.pop().getWord(), 16)
-        elif (type == constants.WORD):
-            return self.stack.pop().getWord()
+        if numItems == 1:
+            return next(self.__pop(type=type))
+        else:
+            return tuple(self.__pop(numItems=numItems, type=type))
+
+
+    def __pop(self, numItems=1, type=constants.UINT256):
+        for _ in range(numItems):
+            self.depth -= 1
+            if (type == constants.UINT256):
+                yield int(self.stack.pop().getWord(), 16)
+            elif (type == constants.WORD):
+                yield self.stack.pop().getWord()
+
 
     def getStack(self):
         """

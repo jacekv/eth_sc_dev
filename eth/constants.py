@@ -4,3 +4,4 @@ UINT256 = 'uint256'
 WORD = 'word'
 
 UINT256VALUE = 2**256
+WORDMAXVALUE = 2**256 - 1
