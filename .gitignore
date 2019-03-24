@@ -1,3 +1,4 @@
 #ignores pychache files
 **/__pycache__
 **.pyc
+evm/
