@@ -2,6 +2,7 @@ import unittest
 import sys
 sys.path.append("../eth/")
 from evm import EVM
+from executionEnvironment import ExecutionEnvironment
 import logging
 import inspect
 
@@ -163,8 +164,9 @@ class EVMArithmeticTest(unittest.TestCase):
 
 
     def execCode(self, code, assertValue):
-        self.evm.setCode(code)
-        self.evm.executeCode()
+        environment = ExecutionEnvironment(code)
+        #self.evm.setCode(code)
+        self.evm.executeCode(environment)
         self.assertEqual(self.evm.stack.pop(), assertValue)
 
 

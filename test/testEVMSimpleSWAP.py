@@ -1,9 +1,11 @@
 import unittest
 import sys
-sys.path.append("../eth/")
-from evm import EVM
 import logging
 import inspect
+
+sys.path.append("../eth/")
+from evm import EVM
+from executionEnvironment import ExecutionEnvironment
 
 class EVMSwapTest(unittest.TestCase):
 
@@ -88,8 +90,8 @@ class EVMSwapTest(unittest.TestCase):
         self.execCode(code, 0x553344, 0xAA)
 
     def execCode(self, code, assertValue, assertValue2):
-        self.evm.setCode(code)
-        self.evm.executeCode()
+        env = ExecutionEnvironment(code)
+        self.evm.executeCode(env)
         self.assertEqual(self.evm.stack.pop(), assertValue)
         self.assertEqual(int(self.evm.stack.getStack()[0].getWord(), 16), assertValue2)
 
