@@ -85,8 +85,6 @@ class EVMEnvInfoTest(unittest.TestCase):
         code = '600035602035'
         environment = ExecutionEnvironment(code, inputData='00000000000000000000000000000000000000000000000000000000b0f5aa210000000000000000000000000000000000000000000000000000000000000002')
         self.evm.executeCode(environment)
-        print(self.evm.stack.getStack()[0])
-        print(self.evm.stack.getStack()[1])
         self.assertEqual(self.evm.stack.pop(), 0x0000000000000000000000000000000000000000000000000000000000000002)
         self.assertEqual(self.evm.stack.pop(), 0x00000000000000000000000000000000000000000000000000000000b0f5aa21)
 
