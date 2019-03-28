@@ -1,9 +1,10 @@
 import constants
 
-from utils.numeric import (
+from logic.numeric import (
     unsigedToSigned,
     signedToUnsigned
 )
+
 
 def add(a, b):
     """
@@ -19,6 +20,7 @@ def add(a, b):
     """
     return (a + b) % constants.UINT256VALUE
 
+
 def mul(a, b):
     """
     Multiplies to numbers and doesn't let it become greater then 2**256.
@@ -31,6 +33,7 @@ def mul(a, b):
         Result of a * b
     """
     return (a * b) % constants.UINT256VALUE
+
 
 def sub(a, b):
     """
@@ -45,6 +48,7 @@ def sub(a, b):
     """
     return (a - b) % constants.UINT256VALUE
 
+
 def div(a, b):
     """
     Calculates division
@@ -57,6 +61,7 @@ def div(a, b):
         Result of a / b
     """
     return 0 if b == 0 else int(a / b)
+
 
 def sdiv(a, b):
     """
@@ -73,6 +78,7 @@ def sdiv(a, b):
     b = unsigedToSigned(b)
     return signedToUnsigned(div(a, b))
 
+
 def mod(a, b):
     """
     Calculates the reminder
@@ -85,6 +91,7 @@ def mod(a, b):
         The reminder of a divided by b
     """
     return 0 if b == 0 else a % b
+
 
 def smod(a, b):
     """
@@ -99,9 +106,10 @@ def smod(a, b):
     """
     a = unsigedToSigned(a)
     b = unsigedToSigned(b)
-    #based on this formula: (a/b)*b + a%b, we determine if the
-    #reminder is negative or not
+    # based on this formula: (a/b)*b + a%b, we determine if the
+    # reminder is negative or not
     return sub(a, mul(div(a, b), b))
+
 
 def addmod(a, b, c):
     """
@@ -117,6 +125,7 @@ def addmod(a, b, c):
     """
     return mod(add(a, b), c)
 
+
 def mulmod(a, b, c):
     """
     Calculates mul mod
@@ -131,6 +140,7 @@ def mulmod(a, b, c):
     """
     return mod(mul(a, b), c)
 
+
 def power(a, b):
     """
     Calculates a raised to the power of b mod 2**256.
@@ -143,6 +153,7 @@ def power(a, b):
         The result of a^b
     """
     return (a ** b) % constants.UINT256VALUE
+
 
 def signextend(a, b):
     """
@@ -159,7 +170,7 @@ def signextend(a, b):
         testbit = a * 8 + 7
         signBit = (1 << testbit)
         if b & signBit:
-            return (b | (2**256 - signBit))
+            return (b | (2 ** 256 - signBit))
         else:
             return (b & (signBit - 1))
     else:

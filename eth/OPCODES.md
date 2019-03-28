@@ -5,7 +5,7 @@ Table taken from: https://raw.githubusercontent.com/trailofbits/evm-opcodes/mast
 
 In the description of each instruction I might be using Stack[X] where X is a
 uint. Stack[0] is the latest pushed value, Stack[1] is right below. Stack[0]
-means that the value is poped from the stack and using during the operation.
+means that the value is popped from the stack and using during the operation.
 Stack[0] = Stack[0] + Stack[1] means that the values from Stack[0] and Stack[1]
 are poped, added and the result is pushed back on the stack.
 
@@ -59,8 +59,8 @@ are poped, added and the result is pushed back on the stack.
 | `0x43` | NUMBER | Get the block's number | - | 2 | | |
 | `0x44` | DIFFICULTY | Get the block's difficulty | - | 2 | | |
 | `0x45` | GASLIMIT | Get the block's gas limit | - | 2 | | |
-| `0x46` - `0x4f` | Unused | - | | |
-| `0x50` | POP | Remove word from stack | - | 2 | | |
+| `0x46` - `0x4f` | Unused | - | - | - | - | - |
+| `0x50` | POP | Remove word from stack | - | 2 | X | Remove top most item from stack |
 | `0x51` | MLOAD | Load word from memory | - | 3* | | |
 | `0x52` | MSTORE | Save word to memory | - | 3* | | |
 | `0x53` | MSTORE8 | Save byte to memory | - | 3 | | |

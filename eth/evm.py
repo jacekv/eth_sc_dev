@@ -4,30 +4,31 @@ from storage import Storage
 
 import logic.arithmetic as arithmetic
 import logic.bitwiseLogic as bitwiseLogic
+from logic.sha3 import *
 
 import logging
 import constants
 
 class EVM(object):
-    
+
     def __init__(self, code="", logger=None):
         """
         The function takes a solidity opcode string and executes each
         instruction one by one.
         """
         self.logger = logger or logging.getLogger(__name__)
-        if len(code) > 0:
-            self.setCode(code)
-        self.programCounter = 0
-        self.stack = Stack()
-        self.memory = Memory()
+        #if len(code) > 0:
+        #    self.setCode(code)
+        #self.programCounter = 0
+        #self.stack = Stack()
+        #self.memory = Memory()
 
 
-    def setCode(self, code):
-        """
-        Sets the code to be executed.
-        """
-        self.code = self.__splitCode(code)
+    #def setCode(self, code):
+    #    """
+    #    Sets the code to be executed.
+    #    """
+    #    self.code = self.__splitCode(code)
 
     def __splitCode(self, code):
         codeSplitted = []
@@ -47,13 +48,18 @@ class EVM(object):
             elif inst >= 0x80 and inst <= 0x9F:
                 #dupX opcode
                 codeSplitted.append(code[pos:pos+length])
+            else:
+                #all the opcodes, which have no parameters
+                codeSplitted.append(code[pos:pos+2])
             pos += length
+
         return codeSplitted
 
-    def executeCode(self):
+    def executeCode(self, environment):
         """
         The function executes the opcode one by one.
         """
+        self.code = self.__splitCode(environment.machineCode)
         self.programCounter = 0
         self.stack = Stack()
         self.memory = Memory()
@@ -64,10 +70,10 @@ class EVM(object):
                 return
             if opcode >= 0x01 and opcode <= 0x0B:
                 self.__simpleArithmetic(opcode)
-            #elif opcode == 0x15:
-            #    self.__isZero()
             elif opcode >= 0x10 and opcode <= 0x1A:
                 self.__bitwiseOperations(opcode)
+            elif opcode == 0x50:
+                self.__pop()
             elif opcode >= 0x60 and opcode <= 0x7F:
                 #we have a push opcode, so we push the next value
                 self.__push(self.code[self.programCounter][2:])
@@ -88,6 +94,12 @@ class EVM(object):
             data: Value to be added to stack
         """
         self.stack.push(int(data, 16))
+
+    def __pop(self):
+        """
+        The function removes the top most entry from the stack.
+        """
+        self.stack.pop()
 
     def __dup(self, value):
         """
