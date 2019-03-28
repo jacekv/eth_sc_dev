@@ -37,20 +37,13 @@ class EVM(object):
             inst = int(code[pos:pos+2], 16)
             length = 2
 
-            if inst >= 0x01 and inst <= 0x1A:
-                #add, sub, mul,... everything without a following paramter
-                #but works directly with the stack
-                codeSplitted.append(code[pos:pos+length])
-            elif inst >= 0x60 and inst <= 0x7F:
+            if inst >= 0x60 and inst <= 0x7F:
                 #PUSHX opcode
                 length = (inst - 0x60 + 2) * 2
                 codeSplitted.append(code[pos:pos+length])
-            elif inst >= 0x80 and inst <= 0x9F:
-                #dupX opcode
-                codeSplitted.append(code[pos:pos+length])
             else:
                 #all the opcodes, which have no parameters
-                codeSplitted.append(code[pos:pos+2])
+                codeSplitted.append(code[pos:pos+length])
             pos += length
 
         return codeSplitted
@@ -72,6 +65,8 @@ class EVM(object):
                 self.__simpleArithmetic(opcode)
             elif opcode >= 0x10 and opcode <= 0x1A:
                 self.__bitwiseOperations(opcode)
+            elif opcode >= 0x30 and opcode <= 0x3E:
+                self.__environmentalInfo(opcode, environment)
             elif opcode == 0x50:
                 self.__pop()
             elif opcode >= 0x60 and opcode <= 0x7F:
@@ -209,6 +204,56 @@ class EVM(object):
             #BYTE
             s2 = bitwiseLogic.byte(*self.stack.pop(numItems=2))
         self.stack.push(s2)
+
+    def __environmentalInfo(self, operation, environment):
+        if operation == 0x30:
+            # ADDRESS
+            self.stack.push(environment.addressOwningCode)
+        elif operation == 0x31:
+            # BALANCE
+            pass
+        elif operation == 0x32:
+            # ORIGIN
+            self.stack.push(environment.senderAddress)
+        elif operation == 0x33:
+            # CALLER
+            self.stack.push(environment.addressCausingExec)
+        elif operation == 0x34:
+            # CALLVALUE
+            self.stack.push(environment.value)
+        elif operation == 0x35:
+            # CALDATALOAD
+            start = self.stack.pop() * 2
+            # 62 = 31 * 2 + 2, since we have bytes and each byte has 2 chars and 64 is excluded
+            self.stack.push(int(environment.inputData[start: start + 64], 16))
+        elif operation == 0x36:
+            # CALLDATASIZE
+            # divide by 2, since we have bytes
+            self.stack.push(int(len(environment.inputData) / 2))
+        elif operation == 0x37:
+            #CALLDATACOPY
+            pass
+        elif operation == 0x38:
+            #CODESIZE
+            pass
+        elif operation == 0x39:
+            #CODECOPY
+            pass
+        elif operation == 0x3A:
+            #GASPRICE
+            pass
+        elif operation == 0x3B:
+            #EXTCODESIZE
+            pass
+        elif operation == 0x3C:
+            #EXTCODECOPY
+            pass
+        elif operation == 0x3D:
+            #RETURNDATASIZE
+            pass
+        elif operation == 0x3E:
+            #RETURNDATACOPY
+            pass
 
 #if __name__ == "__main__":
 #    #code = 'PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x8E DUP1 PUSH2 0x1E PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x4 CALLDATASIZE LT PUSH1 0x3F JUMPI PUSH1 0x0 CALLDATALOAD PUSH29 0x100000000000000000000000000000000000000000000000000000000 SWAP1 DIV PUSH4 0xFFFFFFFF AND DUP1 PUSH4 0xF8A8FD6D EQ PUSH1 0x44 JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST CALLVALUE DUP1 ISZERO PUSH1 0x4F JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x56 PUSH1 0x58 JUMP JUMPDEST STOP JUMPDEST PUSH1 0x2 PUSH1 0x0 DUP2 SWAP1 SSTORE POP JUMP STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 0xbb PUSH12 0x4D348508D72D3271A8A5EA59 0xb6 DUP6 PUSH22 0x3AEDBDB8A82E100AE8BD71A9A16AFA00290000000000'

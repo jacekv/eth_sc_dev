@@ -37,13 +37,13 @@ are poped, added and the result is pushed back on the stack.
 | `0x1a` | BYTE | Retrieve single byte from word | - | 3 | X | |
 | `0x20` | SHA3 | Compute Keccak-256 hash | - | 30* | | |
 | `0x21` - `0x2f`| Unused | Unused | - | - | - | - |
-| `0x30` | ADDRESS | Get address of currently executing account | - | 2 | | |
-| `0x31` | BALANCE | Get balance of the given account | - | 400 | | |
-| `0x32` | ORIGIN | Get execution origination address | - | 2 | | |
-| `0x33` | CALLER | Get caller address | - | 2 | | |
-| `0x34` | CALLVALUE | Get deposited value by the instruction/transaction responsible for this execution | - | 2 | | |
-| `0x35` | CALLDATALOAD | Get input data of current environment | - | 3 | | |
-| `0x36` | CALLDATASIZE | Get size of input data in current environment | - | 2* | | |
+| `0x30` | ADDRESS | Get address of currently executing account and push on the stack| Check `execution environment` in YP for `I_a`| 2 | X | Stack[0] = `I_a`|
+| `0x31` | BALANCE | Get balance of the given account | Stack[0] has an address | 400 | | Stack[0] = State[Stack[0]]_b |
+| `0x32` | ORIGIN | Get execution origination address and push on the stack | Check `execution environment` in YP for `I_o` | 2 | X | Stack[0] = `I_o`|
+| `0x33` | CALLER | Get caller address and push on the stack | Check `execution environment` in YP for `I_s` | 2 | X | Stack[0] = `I_s`|
+| `0x34` | CALLVALUE | Get deposited value by the instruction/transaction responsible for this execution and push on the stack | Check `execution environment` in YP for `I_v` | 2 | X | Stack[0] = `I_v` |
+| `0x35` | CALLDATALOAD | Get input data of current environment | Check `execution environment` in YP for `I_d` | 3 | X | Stack[0] = `I_d`[Stack[0]...(Stack[0] + 31)]|
+| `0x36` | CALLDATASIZE | Get size of input data in current environment | Check `execution environment` in YP for `I_d` | 2* | X | Stack[0] = len(`I_d`)|
 | `0x37` | CALLDATACOPY | Copy input data in current environment to memory | - | 3 | | |
 | `0x38` | CODESIZE | Get size of code running in current environment | - | 2 | | |
 | `0x39` | CODECOPY | Copy code running in current environment to memory | - | 3* | | |

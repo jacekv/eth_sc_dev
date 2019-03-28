@@ -10,6 +10,7 @@ from testEVMSimpleSWAP import EVMSwapTest
 
 from testEVMSimpleArithmetic import EVMArithmeticTest
 from testEVMSimpleLogic import EVMLogicTest
+from testEVMSimpleEnvInfo import EVMEnvInfoTest
 
 
 def suite():
@@ -20,6 +21,7 @@ def suite():
     suite.addTest(EVMDupTest())
     suite.addTest(EVMSwapTest())
     suite.addTest(EVMPopTest())
+    suite.addTest(EVMEnvInfoTest())
     return suite
 
 
