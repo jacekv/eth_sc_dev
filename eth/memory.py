@@ -1,5 +1,6 @@
 from math import ceil
 from word import Word
+
 """
 This is my implementation of the evm memory.
 
@@ -29,6 +30,7 @@ can ensure that we are not overwriting memory that is used internally by
 Solidity.
 """
 
+
 class Memory(object):
 
     def __init__(self):
@@ -44,16 +46,16 @@ class Memory(object):
         \param data (int/str): The value to be stored in the memory.
         """
         word = Word(data)
-        #location in array
+        # location in array
         rest = int(address / 0x20)
-        #location within word
+        # location within word
         position = address % 0x20
         # we are not off
         if position == 0:
-            self.memory[rest-1] = word
+            self.memory[rest - 1] = word
         else:
             (high, low) = word.split(position - 1)
-            self.memory[rest ] = high
+            self.memory[rest] = high
             self.memory[rest + 1] = low
 
     def mstore8(self, address, data):
@@ -64,12 +66,12 @@ class Memory(object):
         \param data (int/str): The value to be stored in the memory.
 
         """
-        #location in array
+        # location in array
         rest = int(address / 0x20)
-        #location within word
+        # location within word
         position = address % 0x20
         word = self.memory[rest]
-        word.setByte(data, 31-position)
+        word.setByte(data, 31 - position)
 
     def expandMemory(self, address):
         """

@@ -45,9 +45,9 @@ are poped, added and the result is pushed back on the stack.
 | `0x35` | CALLDATALOAD | Get input data of current environment | Check `execution environment` in YP for `I_d` | 3 | X | Stack[0] = `I_d`[Stack[0]...(Stack[0] + 31)]|
 | `0x36` | CALLDATASIZE | Get size of input data in current environment | Check `execution environment` in YP for `I_d` | 2* | X | Stack[0] = len(`I_d`)|
 | `0x37` | CALLDATACOPY | Copy input data in current environment to memory | - | 3 | | |
-| `0x38` | CODESIZE | Get size of code running in current environment | - | 2 | | |
+| `0x38` | CODESIZE | Get size of code running in current environment | Check `execution environment` in YP for `I_b` | 2 | X | Stack[0] = len(`I_b`)|
 | `0x39` | CODECOPY | Copy code running in current environment to memory | - | 3* | | |
-| `0x3a` | GASPRICE | Get price of gas in current environment | - | 2 | | |
+| `0x3a` | GASPRICE | Get price of gas in current environment | Check `execution environment` in YP for `I_b` | 2 | X | Stack[0] = `I_p` |
 | `0x3b` | EXTCODESIZE | Get size of an account's code | - | 700 | | |
 | `0x3c` | EXTCODECOPY | Copy an account's code to memory | - | 700* | | |
 | `0x3d` | RETURNDATASIZE | Pushes the size of the return data buffer onto the stack |  [EIP 211](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-211.md) | 2 | | |

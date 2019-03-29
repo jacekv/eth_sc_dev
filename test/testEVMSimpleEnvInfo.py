@@ -100,6 +100,30 @@ class EVMEnvInfoTest(unittest.TestCase):
         self.evm.executeCode(environment)
         self.assertEqual(self.evm.stack.pop(), 36)
 
+    def testCodeSize(self):
+        code = '38'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 1)
+
+    def testCodeSize2(self):
+        code = '600035602038'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 6)
+
+    def testGasPrice(self):
+        code = '3A'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 0)
+
+    def testGasPriceNonZero(self):
+        code = '3A'
+        environment = ExecutionEnvironment(code, gasPrice=21000)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 21000)
+
     def runTest(self):
         methods = dir(self)
         for method in methods:
