@@ -68,7 +68,7 @@ are poped, added and the result is pushed back on the stack.
 | `0x55` | SSTORE | Save word to storage | - | 20000** | | |
 | `0x56` | JUMP | Alter the program counter | - | 8 | | |
 | `0x57` | JUMPI | Conditionally alter the program counter | - | 10 | | Set PC to Stack[0] if Stack[1] != 0 |
-| `0x58` | GETPC | Get the value of the program counter prior to the increment | - | 2 | | |
+| `0x58` | GETPC | Get the value of the program counter prior to the increment | - | 2 | | Stack[0] = PC|
 | `0x59` | MSIZE | Get the size of active memory in bytes | - | 2 | | |
 | `0x5a` | GAS | Get the amount of available gas, including the corresponding reduction the amount of available gas | - | 2 | | |
 | `0x5b` | JUMPDEST | Mark a valid destination for jumps | - | 1 | | |

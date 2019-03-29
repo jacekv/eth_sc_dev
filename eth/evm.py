@@ -19,7 +19,7 @@ class EVM(object):
         """
         self.logger = logger or logging.getLogger(__name__)
 
-    def __splitCode(self, code):
+    def __splitCode(self, code) -> list:
         codeSplitted = []
         pos = 0
         while pos < len(code):
@@ -40,7 +40,7 @@ class EVM(object):
 
         return codeSplitted
 
-    def executeCode(self, environment):
+    def executeCode(self, environment) -> None:
         """
         The function executes the opcode one by one.
         """
@@ -59,8 +59,8 @@ class EVM(object):
                 self.__bitwiseOperations(opcode)
             elif opcode >= 0x30 and opcode <= 0x3E:
                 self.__environmentalInfo(opcode, environment)
-            elif opcode == 0x50:
-                self.__pop()
+            elif opcode == 0x50 and opcode <= 0x5B:
+                self.__memFlowOperations(opcode)
             elif opcode >= 0x60 and opcode <= 0x7F:
                 # we have a push opcode, so we push the next value
                 self.__push(self.code[self.programCounter][2:])
@@ -72,7 +72,7 @@ class EVM(object):
                 self.__swap(opcode - 0x90)
             self.programCounter += 1
 
-    def __push(self, data):
+    def __push(self, data) -> None:
         """
         The function takes a value and pushes it onto the stack.
 
@@ -81,13 +81,13 @@ class EVM(object):
         """
         self.stack.push(int(data, 16))
 
-    def __pop(self):
+    def __pop(self) -> None:
         """
         The function removes the top most entry from the stack.
         """
         self.stack.pop()
 
-    def __dup(self, value):
+    def __dup(self, value) -> None:
         """
         Duplicates a value from the stack.
 
@@ -98,7 +98,7 @@ class EVM(object):
             throw('Invalid opcode')
         self.stack.dup(value + 1)
 
-    def __swap(self, value):
+    def __swap(self, value) -> None:
         """
         Swapes the top most stack value with the stack value at given position
         value.
@@ -110,7 +110,7 @@ class EVM(object):
             throw('Invalid opcode')
         self.stack.swap(value + 1)
 
-    def __simpleArithmetic(self, operation):
+    def __simpleArithmetic(self, operation) -> None:
         """
         Performs simple arithmetic functions using two values from the stack.
 
@@ -152,7 +152,7 @@ class EVM(object):
             s2 = arithmetic.signextend(*self.stack.pop(numItems=2))
         self.stack.push(s2)
 
-    def __bitwiseOperations(self, operation):
+    def __bitwiseOperations(self, operation) -> None:
         """
         Contains different bitwise operations, such as AND, OR, XOR and NOT.
 
@@ -194,7 +194,7 @@ class EVM(object):
             s2 = bitwiseLogic.byte(*self.stack.pop(numItems=2))
         self.stack.push(s2)
 
-    def __environmentalInfo(self, operation, environment):
+    def __environmentalInfo(self, operation, environment) -> None:
         """
         Contains different environment operations, such as ADDRESS, BALANCE, ORIGIN, CALLER, CALLVALUE and more
 
@@ -228,26 +228,69 @@ class EVM(object):
             self.stack.push(int(len(environment.inputData) / 2))
         elif operation == 0x37:
             # CALLDATACOPY
-            pass
+            raise NotImplemented('CALLDATACOPY')
         elif operation == 0x38:
             # CODESIZE
             self.stack.push(int(len(environment.machineCode) / 2))
-            pass
         elif operation == 0x39:
             # CODECOPY
-            pass
+            raise NotImplemented('CODECOPY')
         elif operation == 0x3A:
             # GASPRICE
             self.stack.push(environment.gasPrice)
         elif operation == 0x3B:
             # EXTCODESIZE
-            pass
+            raise NotImplemented('EXTCODESIZE')
         elif operation == 0x3C:
             # EXTCODECOPY
-            pass
+            raise NotImplemented('EXTCODECOPY')
         elif operation == 0x3D:
             # RETURNDATASIZE
-            pass
+            raise NotImplemented('RETURNDATASIZE')
         elif operation == 0x3E:
             # RETURNDATACOPY
-            pass
+            raise NotImplemented('RETURNDATACOPY')
+
+    def __memFlowOperations(self, opcode) -> None:
+        """
+        Contains different memory and flow operations, such as JUMP, PC, MSIZE, GAS and more
+
+        Args:
+            operation: Determines which flow operation is executed
+        """
+        if opcode == 0x50:
+            # POP
+            self.stack.pop()
+        elif opcode == 0x51:
+            # MLOAD
+            raise NotImplemented('MLOAD')
+        elif opcode == 0x52:
+            # MSTORE
+            raise NotImplemented('MSTORE')
+        elif opcode == 0x53:
+            # MSTORE8
+            raise NotImplemented('MSTORE8')
+        elif opcode == 0x54:
+            # SLOAD
+            raise NotImplemented('SLOAD')
+        elif opcode == 0x55:
+            # SSTORE
+            raise NotImplemented('SSTORE')
+        elif opcode == 0x56:
+            # JUMP
+            raise NotImplemented('JUMP')
+        elif opcode == 0x57:
+            # JUMPI
+            raise NotImplemented('JUMPI')
+        elif opcode == 0x58:
+            # PC
+            self.stack.push(self.programCounter)
+        elif opcode == 0x59:
+            # MSIZE
+            raise NotImplemented('MSIZE')
+        elif opcode == 0x5A:
+            # GAS
+            raise NotImplemented('GAS')
+        elif opcode == 0x5B:
+            # JUMPDEST
+            raise NotImplemented('JUMPDEST')

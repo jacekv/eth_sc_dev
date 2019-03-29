@@ -1,13 +1,14 @@
 import unittest
 import sys
+sys.path.append("../eth/")
 import logging
 import inspect
 
-sys.path.append("../eth/")
 from evm import EVM
 from executionEnvironment import ExecutionEnvironment
+from constants import ZERO_ADDRESS
 
-class EVMPopTest(unittest.TestCase):
+class EVMMemFlowTest(unittest.TestCase):
 
     def setUp(self):
         logger = logging.getLogger(__name__)
@@ -31,8 +32,19 @@ class EVMPopTest(unittest.TestCase):
         self.evm.executeCode(environment)
         self.assertEqual(self.evm.stack.pop(), 0x11)
 
+    def testAddress(self):
+        code = '30'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), ZERO_ADDRESS)
+
+
     def runTest(self):
         methods = dir(self)
         for method in methods:
             if method[:4] == 'test':
                 getattr(self, method)()
+
+
+if __name__ == '__main__':
+    unittest.main()

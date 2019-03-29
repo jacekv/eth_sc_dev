@@ -4,13 +4,13 @@ import sys
 sys.path.append("eth/")
 
 from testEVMSimplePUSH import EVMPushTest
-from testEVMSimplePOP import EVMPopTest
 from testEVMSimpleDUP import EVMDupTest
 from testEVMSimpleSWAP import EVMSwapTest
 
 from testEVMSimpleArithmetic import EVMArithmeticTest
 from testEVMSimpleLogic import EVMLogicTest
 from testEVMSimpleEnvInfo import EVMEnvInfoTest
+from testEVMSimpleMemFlow import EVMMemFlowTest
 
 
 def suite():
@@ -20,8 +20,8 @@ def suite():
     suite.addTest(EVMLogicTest())
     suite.addTest(EVMDupTest())
     suite.addTest(EVMSwapTest())
-    suite.addTest(EVMPopTest())
     suite.addTest(EVMEnvInfoTest())
+    suite.addTest(EVMMemFlowTest())
     return suite
 
 
