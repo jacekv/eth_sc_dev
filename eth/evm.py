@@ -59,7 +59,9 @@ class EVM(object):
                 self.__bitwiseOperations(opcode)
             elif opcode >= 0x30 and opcode <= 0x3E:
                 self.__environmentalInfo(opcode, environment)
-            elif opcode == 0x50 and opcode <= 0x5B:
+            elif opcode >= 0x40 and opcode <= 0x45:
+                self.__blockInformation(opcode, environment)
+            elif opcode >= 0x50 and opcode <= 0x5B:
                 self.__memFlowOperations(opcode)
             elif opcode >= 0x60 and opcode <= 0x7F:
                 # we have a push opcode, so we push the next value
@@ -251,6 +253,33 @@ class EVM(object):
             # RETURNDATACOPY
             raise NotImplemented('RETURNDATACOPY')
 
+    def __blockInformation(self, opcode, environment) -> None:
+        """
+        Contains different block information operations, BLOCKHASH, COINBASE, TIMESTAMP, NUMBER and more
+
+        Args:
+            operation: Determines which block information operation is executed
+            environment: The environment, which contains all necessary information
+        """
+        if opcode == 0x40:
+            # BLOCKHASH
+            raise NotADirectoryError('BLOCKHASH')
+        elif opcode == 0x41:
+            # COINBASE
+            self.stack.push(environment.blockHeader.coinbase)
+        elif opcode == 0x42:
+            # TIMESTAMP
+            self.stack.push(environment.blockHeader.timestamp)
+        elif opcode == 0x43:
+            # NUMBER
+            self.stack.push(environment.blockHeader.block_number)
+        elif opcode == 0x44:
+            # DIFFICULTY
+            self.stack.push(environment.blockHeader.difficulty)
+        elif opcode == 0x45:
+            # GASLIMIT
+            self.stack.push(environment.blockHeader.gas_limit)
+
     def __memFlowOperations(self, opcode) -> None:
         """
         Contains different memory and flow operations, such as JUMP, PC, MSIZE, GAS and more
@@ -278,10 +307,14 @@ class EVM(object):
             raise NotImplemented('SSTORE')
         elif opcode == 0x56:
             # JUMP
-            raise NotImplemented('JUMP')
+            # -1 because PC is incremented afterwards
+            self.programCounter = self.stack.pop() - 1
         elif opcode == 0x57:
             # JUMPI
-            raise NotImplemented('JUMPI')
+            loc = self.stack.pop()
+            cond = self.stack.pop()
+            if cond != 0:
+                self.programCounter = loc - 1
         elif opcode == 0x58:
             # PC
             self.stack.push(self.programCounter)
@@ -293,4 +326,5 @@ class EVM(object):
             raise NotImplemented('GAS')
         elif opcode == 0x5B:
             # JUMPDEST
-            raise NotImplemented('JUMPDEST')
+            # not sure what is happening here
+            pass

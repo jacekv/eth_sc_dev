@@ -11,6 +11,7 @@ from testEVMSimpleArithmetic import EVMArithmeticTest
 from testEVMSimpleLogic import EVMLogicTest
 from testEVMSimpleEnvInfo import EVMEnvInfoTest
 from testEVMSimpleMemFlow import EVMMemFlowTest
+from testEVMSimpleBlockInfo import EVMBlockInfoTest
 
 
 def suite():
@@ -22,6 +23,7 @@ def suite():
     suite.addTest(EVMSwapTest())
     suite.addTest(EVMEnvInfoTest())
     suite.addTest(EVMMemFlowTest())
+    suite.addTest(EVMBlockInfoTest())
     return suite
 
 

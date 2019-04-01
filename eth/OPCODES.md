@@ -54,11 +54,11 @@ are poped, added and the result is pushed back on the stack.
 | `0x3e` | RETURNDATACOPY | Copies data from the return data buffer to memory | [EIP 211](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-211.md) | 3 | | |
 | `0x3f` | Unused | - | - | - | - | - |
 | `0x40` | BLOCKHASH | Get the hash of one of the 256 most recent complete blocks | - | 20 | | |
-| `0x41` | COINBASE | Get the block's beneficiary address | - | 2 | | |
-| `0x42` | TIMESTAMP | Get the block's timestamp | - | 2 | | |
-| `0x43` | NUMBER | Get the block's number | - | 2 | | |
-| `0x44` | DIFFICULTY | Get the block's difficulty | - | 2 | | |
-| `0x45` | GASLIMIT | Get the block's gas limit | - | 2 | | |
+| `0x41` | COINBASE | Get the block's beneficiary address | - | 2 | X | Stack[0] = Blockheader.Coinbase |
+| `0x42` | TIMESTAMP | Get the block's timestamp | - | 2 | X | Stack[0] = Blockheader.Timestamp |
+| `0x43` | NUMBER | Get the block's number | - | 2 | X | Stack[0] = Blockheader.BlockNumber |
+| `0x44` | DIFFICULTY | Get the block's difficulty | - | 2 | X | Stack[0] = Blockheader.Difficulty |
+| `0x45` | GASLIMIT | Get the block's gas limit | - | 2 | X | Stack[0] = Blockheader.GasLimit |
 | `0x46` - `0x4f` | Unused | - | - | - | - | - |
 | `0x50` | POP | Remove word from stack | - | 2 | X | Remove top most item from stack |
 | `0x51` | MLOAD | Load word from memory | - | 3* | | |
@@ -66,12 +66,12 @@ are poped, added and the result is pushed back on the stack.
 | `0x53` | MSTORE8 | Save byte to memory | - | 3 | | |
 | `0x54` | SLOAD | Load word from storage | - | 200 | | |
 | `0x55` | SSTORE | Save word to storage | - | 20000** | | |
-| `0x56` | JUMP | Alter the program counter | - | 8 | | |
-| `0x57` | JUMPI | Conditionally alter the program counter | - | 10 | | Set PC to Stack[0] if Stack[1] != 0 |
-| `0x58` | GETPC | Get the value of the program counter prior to the increment | - | 2 | | Stack[0] = PC|
+| `0x56` | JUMP | Alter the program counter | - | 8 | X | PC = Stack[0] |
+| `0x57` | JUMPI | Conditionally alter the program counter | - | 10 | X | Set PC = Stack[0] if Stack[1] != 0, else PC += 1|
+| `0x58` | GETPC | Get the value of the program counter prior to the increment | - | 2 | X | Stack[0] = PC|
 | `0x59` | MSIZE | Get the size of active memory in bytes | - | 2 | | |
 | `0x5a` | GAS | Get the amount of available gas, including the corresponding reduction the amount of available gas | - | 2 | | |
-| `0x5b` | JUMPDEST | Mark a valid destination for jumps | - | 1 | | |
+| `0x5b` | JUMPDEST | Mark a valid destination for jumps. No effect on machine state | - | 1 | X | - |
 | `0x5c` - `0x5f` | Unused | - | - | - | - | - |
 | `0x60` | PUSH1 | Place 1 byte item on stack | - | 3 | X | Push 1 byte on stack |
 | `0x61` | PUSH2 | Place 2-byte item on stack | - | 3 | X | Push 2 byte on stack |
@@ -157,11 +157,11 @@ are poped, added and the result is pushed back on the stack.
 | `0xe2` | SSTOREBYTES | Only referenced in pyethereum | - | - | | |
 | `0xe3` | SSIZE | Only referenced in pyethereum | - | - | | |
 | `0xe4` - `0xef` | Unused | - | - | - | - | - |
-| `0xf0` | CREATE | | Create a new account with associated code | - | 32000 | |
+| `0xf0` | CREATE | Create a new account with associated code | - | - | 32000 | |
 | `0xf1` | CALL | Message-call into an account | - | Complicated | | |
 | `0xf2` | CALLCODE | Message-call into this account with alternative account's code | - | Complicated | | |
 | `0xf3` | RETURN | Halt execution returning output data | - | 0 | | |
-| `0xf4` | DELEGATECALL | Message-call into this account with an alternative account's code, but persistin |g into this account with an alternative account's code | - | Complicated | |
+| `0xf4` | DELEGATECALL | Message-call into this account with an alternative account's code, but persisting into this account with an alternative account's code| - | - | Complicated | |
 | `0xf5` | CALLBLACKBOX | - | - | | 40 | |
 | `0xf6` - `0xf9` | Unused | - | - | - | - | - |
 | `0xfa` | STATICCALL | Similar to CALL, but does not modify state | - | 40 | | |

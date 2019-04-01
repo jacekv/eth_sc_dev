@@ -32,11 +32,40 @@ class EVMMemFlowTest(unittest.TestCase):
         self.evm.executeCode(environment)
         self.assertEqual(self.evm.stack.pop(), 0x11)
 
-    def testAddress(self):
-        code = '30'
+    def testJump(self):
+        code = '6004566011602260336044'
         environment = ExecutionEnvironment(code)
         self.evm.executeCode(environment)
-        self.assertEqual(self.evm.stack.pop(), ZERO_ADDRESS)
+        self.assertEqual(self.evm.stack.pop(), 0x44)
+        self.assertEqual(self.evm.stack.pop(), 0x33)
+
+    def testJumpiTrue(self):
+        code = '60016005576011602260336044'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 0x44)
+        self.assertEqual(self.evm.stack.pop(), 0x33)
+
+    def testJumpiFalse(self):
+        code = '60006005576011602260336044'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 0x44)
+        self.assertEqual(self.evm.stack.pop(), 0x33)
+        self.assertEqual(self.evm.stack.pop(), 0x22)
+        self.assertEqual(self.evm.stack.pop(), 0x11)
+
+    def testPC(self):
+        code = '58'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 0)
+
+    def testPC2(self):
+        code = '6011602258'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 2)
 
 
     def runTest(self):
