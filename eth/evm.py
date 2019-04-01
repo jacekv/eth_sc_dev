@@ -11,11 +11,6 @@ import constants
 
 
 class EVM(object):
-    programCounter: int
-    code: list
-    activeMemWords: int
-    stack: Stack()
-    memory: Memory
 
     def __init__(self, code="", logger=None):
         """
@@ -23,6 +18,11 @@ class EVM(object):
         instruction one by one.
         """
         self.logger = logger or logging.getLogger(__name__)
+        self.programCounter: int
+        self.code: list
+        self.activeMemWords: int
+        self.stack: Stack()
+        self.memory: Memory
 
     def __splitCode(self, code) -> list:
         codeSplitted = []
