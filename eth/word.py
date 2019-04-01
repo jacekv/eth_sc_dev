@@ -1,7 +1,8 @@
-import string
 from utils import *
 
+
 class Word(object):
+
     def __init__(self, value=0, offset=0):
         """
         Constructor
@@ -18,37 +19,44 @@ class Word(object):
         \param value (int/str): The new value for the word.
         \param offset (int): Offset for the byte in the word.
         """
-        if (type(value) != int and type(value) != str):
+        if type(value) != int and type(value) != str:
             raise ValueError('Value is not of type int or str.')
-        if (type(value) == str):
-            #check if we have a hex value given
-            if (value[:2] == '0x'):
-                #does it contain valid hex characters?
-                if (utils.isHex(value[2:])):
-                    #if yes, cast to int
+        if type(value) == str:
+            # check if we have a hex value given
+            if value[:2] == '0x':
+                # does it contain valid hex characters?
+                if utils.isHex(value[2:]):
+                    # if yes, cast to int
                     value = int(value, 16)
                 else:
-                    #otherwise, you know
+                    # otherwise, you know
                     raise ValueError('Given value contains illegal characters.')
             else:
-                #no hex value, so we go for base 10
+                # no hex value, so we go for base 10
                 value = int(value)
-        #does it have more than 32 bytes?
-        if (value > 2**256):
+        # does it have more than 32 bytes?
+        if value > 2 ** 256:
             raise ValueError('Given value larger than 2**256.')
-        if (offset > 31):
+        if offset > 31:
             raise ValueError('Offset larger than 32 bytes.')
-        #format and set!
+        # format and set!
         self.value = '{:064x}'.format(value << (offset * 8))
+        # print('Value: ', self.value)
 
-
-    def getWord(self):
+    def getWord(self, big: bool = False):
         """
         The function returns the value of the word.
 
+        \param big (boolean): If True, says that the value is in big endian format and changes it to little endian.
+
         \returns String: Value of the word.
         """
-        return self.value
+        if big:
+            value = bytearray.fromhex(self.value)
+            value.reverse()
+            return ''.join(format(x, '02x') for x in value)
+        else:
+            return self.value
 
     def setByte(self, value, position):
         """
@@ -65,18 +73,17 @@ class Word(object):
         position *= 2
         if (type(value) == str):
             if (value[:2] == '0x'):
-                #does it contain valid hex characters?
+                # does it contain valid hex characters?
                 if (utils.isHex(value[2:4])):
-                    #if yes, cast to int
+                    # if yes, cast to int
                     value = int(value, 16)
                 else:
-                    #otherwise, you know
+                    # otherwise, you know
                     raise ValueError('Given value contains illegal characters.')
             else:
-                #no hex value, so we go for base 10
+                # no hex value, so we go for base 10
                 value = int(value)
-        self.value = self.value[:position] + '{:02x}'.format(value % 256) + self.value[position+2:]
-
+        self.value = self.value[:position] + '{:02x}'.format(value % 256) + self.value[position + 2:]
 
     def getByte(self, byte):
         """
@@ -90,10 +97,10 @@ class Word(object):
             raise ValueError('Value is not of type int.')
         elif (byte > 32):
             raise ValueError('Value is larger than 32.')
-        #bytes times 2, since we have 64 positions
+        # bytes times 2, since we have 64 positions
         byte *= 2
-        #reverse value and extract the byte
-        return (self.value[::-1])[byte:byte+2]
+        # reverse value and extract the byte
+        return (self.value[::-1])[byte:byte + 2]
 
     def getLsb(self):
         """
@@ -119,10 +126,12 @@ class Word(object):
 
         \returns tuple: Contains the high and the low part of the word.
         """
-        byte = (31 - byte ) * 2
+        byte = (31 - byte) * 2
         low = Word('0x{:0<64}'.format(self.value[byte:]))
         high = Word('0x' + self.value[:byte])
-        return (high, low)
+        return high, low
 
-    def __str__(self):
-        return self.value
+    #def __str__(self):
+    #    value = bytearray.fromhex(self.value)
+    #    value.reverse()
+    #    return ''.join(format(x, '02x') for x in value)

@@ -3,6 +3,12 @@
 ## Table
 Table taken from: https://raw.githubusercontent.com/trailofbits/evm-opcodes/master/README.md
 
+Note: 
+- When interpreting 256-bit binary values as integers, the representation is big-endian.
+- When a 256-bit machine datum is converted to and from a 160-bit address or hash, the rightwards (low-order for BE)
+20 bytes are used and the left most 12 are discarded or filled with zeroes, thus the integer values (when the bytes are
+interpreted as big-endian) are equivalent.
+
 In the description of each instruction I might be using Stack[X] where X is a
 uint. Stack[0] is the latest pushed value, Stack[1] is right below. Stack[0]
 means that the value is popped from the stack and using during the operation.
@@ -62,8 +68,8 @@ are poped, added and the result is pushed back on the stack.
 | `0x46` - `0x4f` | Unused | - | - | - | - | - |
 | `0x50` | POP | Remove word from stack | - | 2 | X | Remove top most item from stack |
 | `0x51` | MLOAD | Load word from memory | - | 3* | | |
-| `0x52` | MSTORE | Save word to memory | - | 3* | | |
-| `0x53` | MSTORE8 | Save byte to memory | - | 3 | | |
+| `0x52` | MSTORE | Save word to memory | - | 3* | X | Memory[Stack[0]...(Stack[0] + 31)] = Stack[1] && Active Words in Memory counter += 1 |
+| `0x53` | MSTORE8 | Save byte to memory | - | 3 | X | Memory[Stack[0]] = (Stack[1] mod 256) && Active Words in Memory counter += 1 |
 | `0x54` | SLOAD | Load word from storage | - | 200 | | |
 | `0x55` | SSTORE | Save word to storage | - | 20000** | | |
 | `0x56` | JUMP | Alter the program counter | - | 8 | X | PC = Stack[0] |

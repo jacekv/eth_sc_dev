@@ -34,7 +34,7 @@ Solidity.
 class Memory(object):
 
     def __init__(self):
-        self.memory = []
+        self.memory = [Word()]
         self.size = 0
 
     def mstore(self, address, data):
@@ -52,7 +52,7 @@ class Memory(object):
         position = address % 0x20
         # we are not off
         if position == 0:
-            self.memory[rest - 1] = word
+            self.memory[rest] = word
         else:
             (high, low) = word.split(position - 1)
             self.memory[rest] = high
@@ -66,12 +66,13 @@ class Memory(object):
         \param data (int/str): The value to be stored in the memory.
 
         """
+        data = data % 256
         # location in array
         rest = int(address / 0x20)
         # location within word
         position = address % 0x20
         word = self.memory[rest]
-        word.setByte(data, 31 - position)
+        word.setByte(data, position)
 
     def expandMemory(self, address):
         """
@@ -81,8 +82,8 @@ class Memory(object):
             determine how much memory needs to be expanded
         """
         rest = ceil(address / 0x20)
-        if ((address % 20) > 0):
-            rest += 1
+        #if ((address % 20) > 0):
+        #    rest += 1
         for i in range(0, rest):
             self.memory.append(Word())
         self.size = len(self.memory)
@@ -112,6 +113,7 @@ class Memory(object):
         output = ''
         address = 0
         for word in self.memory:
-            output += '{:02x} - {:02x}: {:}\n'.format((address + 0x1F), address, word)
+            # output += '{:02x} - {:02x}: {:}\n'.format((address + 0x1F), address, word)
+            output += '{:02x} - {:02x}: {:}\n'.format(address, (address + 0x1F), word.getWord())
             address += 0x20
         return output

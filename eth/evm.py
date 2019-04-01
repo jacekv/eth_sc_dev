@@ -11,6 +11,11 @@ import constants
 
 
 class EVM(object):
+    programCounter: int
+    code: list
+    activeMemWords: int
+    stack: Stack()
+    memory: Memory
 
     def __init__(self, code="", logger=None):
         """
@@ -46,6 +51,8 @@ class EVM(object):
         """
         self.code = self.__splitCode(environment.machineCode)
         self.programCounter = 0
+        # active word in memory mue_i in execution environment
+        self.activeMemWords = 0
         self.stack = Stack()
         self.memory = Memory()
         while self.programCounter < len(self.code):
@@ -295,10 +302,19 @@ class EVM(object):
             raise NotImplemented('MLOAD')
         elif opcode == 0x52:
             # MSTORE
-            raise NotImplemented('MSTORE')
+            data = self.stack.pop(numItems=2)
+            # expand if needed
+            self.memory.expandMemory(data[0])
+            self.memory.mstore(*data)
+            mem = self.memory.getMemory()
+            self.activeMemWords = max(self.activeMemWords, self.memory.getMemorySize())
         elif opcode == 0x53:
             # MSTORE8
-            raise NotImplemented('MSTORE8')
+            data = self.stack.pop(numItems=2)
+            # expand if needed
+            self.memory.expandMemory(data[0])
+            self.memory.mstore8(*data)
+            self.activeMemWords = max(self.activeMemWords, self.memory.getMemorySize())
         elif opcode == 0x54:
             # SLOAD
             raise NotImplemented('SLOAD')
