@@ -37,7 +37,19 @@ class Memory(object):
         self.memory = [Word()]
         self.size = 0
 
-    def mstore(self, address, data):
+    def mload(self, address):
+        pos = address % 0x10
+        cnt = int(address / 0x20)
+        # in case the memory has not yet been expanded that far
+        if cnt > self.size:
+            return Word()
+        w = self.memory[cnt]
+        if pos > 0:
+            w2 = self.memory[cnt+1] if (cnt + 1) < self.size else Word()
+            w = w.combine(address, w2)
+        return w
+
+    def mstore(self, address, data) -> None:
         """
         The function receives some data and stores it in the memory at the given
         address. It also checks if it needs to expand the memory.
@@ -58,7 +70,7 @@ class Memory(object):
             self.memory[rest] = high
             self.memory[rest + 1] = low
 
-    def mstore8(self, address, data):
+    def mstore8(self, address, data) -> None:
         """
         Stores a single byte in the memory at the given address.
 
@@ -74,7 +86,7 @@ class Memory(object):
         word = self.memory[rest]
         word.setByte(data, position)
 
-    def expandMemory(self, address):
+    def expandMemory(self, address) -> None:
         """
         Function to expand the memory.
 
@@ -88,7 +100,7 @@ class Memory(object):
             self.memory.append(Word())
         self.size = len(self.memory)
 
-    def getMemory(self):
+    def getMemory(self) -> list:
         """
         Returns the whole memory content.
 
@@ -96,7 +108,7 @@ class Memory(object):
         """
         return self.memory
 
-    def getMemorySize(self):
+    def getMemorySize(self) -> int:
         """
         Returns the size of the memory.
 
@@ -104,7 +116,7 @@ class Memory(object):
         """
         return self.size
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Generated an output of the memory and returns it.
 

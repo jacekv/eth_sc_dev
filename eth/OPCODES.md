@@ -67,7 +67,7 @@ are poped, added and the result is pushed back on the stack.
 | `0x45` | GASLIMIT | Get the block's gas limit | - | 2 | X | Stack[0] = Blockheader.GasLimit |
 | `0x46` - `0x4f` | Unused | - | - | - | - | - |
 | `0x50` | POP | Remove word from stack | - | 2 | X | Remove top most item from stack |
-| `0x51` | MLOAD | Load word from memory | - | 3* | | |
+| `0x51` | MLOAD | Load word from memory | - | 3* | X | Stack[0] = Memory[Stack[0]...(Stack[0] + 31)] && Active Words in Memory counter += 1 |
 | `0x52` | MSTORE | Save word to memory | - | 3* | X | Memory[Stack[0]...(Stack[0] + 31)] = Stack[1] && Active Words in Memory counter += 1 |
 | `0x53` | MSTORE8 | Save byte to memory | - | 3 | X | Memory[Stack[0]] = (Stack[1] mod 256) && Active Words in Memory counter += 1 |
 | `0x54` | SLOAD | Load word from storage | - | 200 | | |

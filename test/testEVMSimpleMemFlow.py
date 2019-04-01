@@ -32,6 +32,20 @@ class EVMMemFlowTest(unittest.TestCase):
         self.evm.executeCode(environment)
         self.assertEqual(self.evm.stack.pop(), 0x11)
 
+    def testMLoad(self):
+        code = '631122334460005260FF602053601C51'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        mem = self.evm.memory.getMemory()
+        self.assertEqual(self.evm.stack.pop(), 0x11223344FF000000000000000000000000000000000000000000000000000000)
+
+    def testMLoad2(self):
+        code = '6311223344600052600051'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        mem = self.evm.memory.getMemory()
+        self.assertEqual(self.evm.stack.pop(), 0x0000000000000000000000000000000000000000000000000000000011223344)
+
     def testMstore(self):
         code = '631122334460A052'
         environment = ExecutionEnvironment(code)
@@ -53,7 +67,6 @@ class EVMMemFlowTest(unittest.TestCase):
         environment = ExecutionEnvironment(code)
         self.evm.executeCode(environment)
         mem = self.evm.memory.getMemory()
-        print(self.evm.memory)
         self.assertEqual(mem[0].getWord(), '00000000000000000000000000000000000000000000000000000000112233ff')
 
     def testJump(self):

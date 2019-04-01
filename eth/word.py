@@ -131,6 +131,12 @@ class Word(object):
         high = Word('0x' + self.value[:byte])
         return high, low
 
+    def combine(self, address, w2):
+        combined = self.value[address*2:] + w2.getWord()[:address*2]
+        return Word(int(combined, 16))
+
+
+
     #def __str__(self):
     #    value = bytearray.fromhex(self.value)
     #    value.reverse()

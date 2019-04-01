@@ -299,7 +299,9 @@ class EVM(object):
             self.stack.pop()
         elif opcode == 0x51:
             # MLOAD
-            raise NotImplemented('MLOAD')
+            word = self.memory.mload(self.stack.pop()).getWord()
+            self.stack.push(int(word, 16))
+            self.activeMemWords = max(self.activeMemWords, self.memory.getMemorySize())
         elif opcode == 0x52:
             # MSTORE
             data = self.stack.pop(numItems=2)
