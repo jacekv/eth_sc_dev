@@ -256,7 +256,20 @@ class EVM(object):
             self.stack.push(int(len(environment.machineCode) / 2))
         elif operation == 0x39:
             # CODECOPY
-            raise NotImplemented('CODECOPY')
+            sdata = self.stack.pop(numItems=3)
+            callData = environment.machineCode
+            callDataLen = len(callData)
+            start = sdata[1] * 2
+            # mul 2 because it is a string of bytes
+            for i in range(0, sdata[2] * 2, 2):
+                if (start + i) < callDataLen:
+                    d = int(callData[start + i: start + i + 2], 16)
+                else:
+                    i = sdata[2] * 2
+                    continue
+                # div 2 because it cals the steps for the mem location wrong, due to the 2 steps in the loop
+                self.memory.mstore8(sdata[0] + int(i / 2), d)
+            self.activeMemWords = self.__mem_expansion(self.activeMemWords, sdata[0], sdata[2])
         elif operation == 0x3A:
             # GASPRICE
             self.stack.push(environment.gasPrice)

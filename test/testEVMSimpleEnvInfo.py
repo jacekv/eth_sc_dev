@@ -114,6 +114,20 @@ class EVMEnvInfoTest(unittest.TestCase):
         mem = self.evm.memory.getMemory()
         self.assertEqual(mem[0].getWord(), '112233445566778899aabbccdd02000000000000000000000000000000000000')
 
+    def testCodeCopy(self):
+        code = '60076000600039'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        mem = self.evm.memory.getMemory()
+        self.assertEqual(mem[0].getWord(), '6007600060003900000000000000000000000000000000000000000000000000')
+
+    def testCodeCopy(self):
+        code = '60086000600039'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        mem = self.evm.memory.getMemory()
+        self.assertEqual(mem[0].getWord(), '6008600060003900000000000000000000000000000000000000000000000000')
+
 
     def testCodeSize(self):
         code = '38'

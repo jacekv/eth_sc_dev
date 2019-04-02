@@ -52,7 +52,7 @@ are poped, added and the result is pushed back on the stack.
 | `0x36` | CALLDATASIZE | Get size of input data in current environment | Check `execution environment` in YP for `I_d` | 2* | X | Stack[0] = len(`I_d`)|
 | `0x37` | CALLDATACOPY | Copy input data in current environment to memory | - | 3 | X | for i from 0 to (Stack[2] - 1): Memory[Stack[0] + 1] = `I_d`[Stack[1] + i] if Stack[1] + i < len(callData) else 0 && memory expansion function |
 | `0x38` | CODESIZE | Get size of code running in current environment | Check `execution environment` in YP for `I_b` | 2 | X | Stack[0] = len(`I_b`)|
-| `0x39` | CODECOPY | Copy code running in current environment to memory | - | 3* | | |
+| `0x39` | CODECOPY | Copy code running in current environment to memory | - | 3* | X | for i from 0 to (Stack[2] - 1): Memory[Stack[0] + 1] = `I_b`[Stack[1] + i] if Stack[1] + i < len(callData) else 0 && memory expansion function |
 | `0x3a` | GASPRICE | Get price of gas in current environment | Check `execution environment` in YP for `I_b` | 2 | X | Stack[0] = `I_p` |
 | `0x3b` | EXTCODESIZE | Get size of an account's code | - | 700 | | |
 | `0x3c` | EXTCODECOPY | Copy an account's code to memory | - | 700* | | |
