@@ -75,7 +75,7 @@ are poped, added and the result is pushed back on the stack.
 | `0x56` | JUMP | Alter the program counter | - | 8 | X | PC = Stack[0] |
 | `0x57` | JUMPI | Conditionally alter the program counter | - | 10 | X | Set PC = Stack[0] if Stack[1] != 0, else PC += 1|
 | `0x58` | GETPC | Get the value of the program counter prior to the increment | - | 2 | X | Stack[0] = PC|
-| `0x59` | MSIZE | Get the size of active memory in bytes | - | 2 | | |
+| `0x59` | MSIZE | Get the size of active memory in bytes | - | 2 | X | Stack[0] = 32 * Active Words in Memory counter |
 | `0x5a` | GAS | Get the amount of available gas, including the corresponding reduction the amount of available gas | - | 2 | | |
 | `0x5b` | JUMPDEST | Mark a valid destination for jumps. No effect on machine state | - | 1 | X | - |
 | `0x5c` - `0x5f` | Unused | - | - | - | - | - |

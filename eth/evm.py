@@ -338,7 +338,8 @@ class EVM(object):
             self.stack.push(self.programCounter)
         elif opcode == 0x59:
             # MSIZE
-            raise NotImplemented('MSIZE')
+            size = self.memory.getMemorySize()
+            self.stack.push((self.activeMemWords * 32))
         elif opcode == 0x5A:
             # GAS
             raise NotImplemented('GAS')

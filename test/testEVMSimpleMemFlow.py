@@ -104,6 +104,24 @@ class EVMMemFlowTest(unittest.TestCase):
         self.evm.executeCode(environment)
         self.assertEqual(self.evm.stack.pop(), 2)
 
+    def testMSize(self):
+        code = '59'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 0)
+
+    def testMSize2(self):
+        code = '604460005359'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 32)
+
+    def testMSize3(self):
+        code = '631122334460A05259'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 192)
+
 
     def runTest(self):
         methods = dir(self)
