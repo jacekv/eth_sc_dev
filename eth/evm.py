@@ -65,6 +65,8 @@ class EVM(object):
                 self.__simpleArithmetic(opcode)
             elif opcode >= 0x10 and opcode <= 0x1A:
                 self.__bitwiseOperations(opcode)
+            elif opcode == 0x20:
+                self.__sha3()
             elif opcode >= 0x30 and opcode <= 0x3E:
                 self.__environmentalInfo(opcode, environment)
             elif opcode >= 0x40 and opcode <= 0x45:
@@ -203,6 +205,16 @@ class EVM(object):
             # BYTE
             s2 = bitwiseLogic.byte(*self.stack.pop(numItems=2))
         self.stack.push(s2)
+
+    def __sha3(self) -> None:
+        """
+        Contains the sha3 operation.
+        """
+        address, length = self.stack.pop(numItems=2)
+        data = self.memory.getMemoryArea(address, length)
+        hash = keccak256(data)
+        self.stack.push(int(hash, 16))
+        self.__mem_expansion(self.activeMemWords, address, length)
 
     def __environmentalInfo(self, operation, environment) -> None:
         """

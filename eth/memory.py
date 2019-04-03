@@ -116,6 +116,27 @@ class Memory(object):
         """
         return self.size
 
+    def getByte(self, address) -> str:
+        """
+        Returns a single byte from the given address.
+
+        \returns Int: The byte at given address.
+        """
+        pos = address % 0x10
+        cnt = int(address / 0x20)
+        if cnt > self.size:
+            return '00'
+        w = self.memory[cnt]
+        return w.getByte(address)
+
+    def getMemoryArea(self, address: int, length: int) -> str:
+        start = int(address / 32)
+        end = int((address + length - 1) / 32) + 1
+        data = ''
+        for i in range(start, end):
+            data += self.memory[i].getWord()
+        return data[address * 2: (address + length) * 2]
+
     def __str__(self) -> str:
         """
         Generated an output of the memory and returns it.

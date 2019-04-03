@@ -162,6 +162,17 @@ class EVMArithmeticTest(unittest.TestCase):
             self.execCode(code.format(i), value)
             value = (value + 0x11) % 0x110
 
+    def testSha3(self):
+        code = '63646174616000526004601C20'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 0x8f54f1c2d0eb5771cd5bf67a6689fcd6eed9444d91a39e5ef32a9b4ae5ca14ff)
+
+    def testSha3_2(self):
+        code = '63646174616001526004601D20'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(environment)
+        self.assertEqual(self.evm.stack.pop(), 0x8f54f1c2d0eb5771cd5bf67a6689fcd6eed9444d91a39e5ef32a9b4ae5ca14ff)
 
     def execCode(self, code, assertValue):
         environment = ExecutionEnvironment(code)

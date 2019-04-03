@@ -25,7 +25,7 @@ class Word(object):
             # check if we have a hex value given
             if value[:2] == '0x':
                 # does it contain valid hex characters?
-                if utils.isHex(value[2:]):
+                if isHex(value[2:]):
                     # if yes, cast to int
                     value = int(value, 16)
                 else:
@@ -99,8 +99,9 @@ class Word(object):
             raise ValueError('Value is larger than 32.')
         # bytes times 2, since we have 64 positions
         byte *= 2
+        print('Byte:', byte)
         # reverse value and extract the byte
-        return (self.value[::-1])[byte:byte + 2]
+        return self.value[byte:byte + 2]#(self.value[::-1])[byte:byte + 2]
 
     def getLsb(self):
         """
