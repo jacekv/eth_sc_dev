@@ -1,6 +1,8 @@
 from memory import Memory
 from stack import Stack
 from storage import Storage
+from state import State
+from executionEnvironment import ExecutionEnvironment
 
 import logic.arithmetic as arithmetic
 import logic.bitwiseLogic as bitwiseLogic
@@ -13,7 +15,7 @@ import constants
 
 class EVM(object):
 
-    def __init__(self, code="", logger=None):
+    def __init__(self, logger=None):
         """
         The function takes a solidity opcode string and executes each
         instruction one by one.
@@ -22,8 +24,9 @@ class EVM(object):
         self.programCounter: int
         self.code: list
         self.activeMemWords: int
-        self.stack: Stack()
+        self.stack: Stack
         self.memory: Memory
+        self.worldState: State
 
     def __splitCode(self, code) -> list:
         codeSplitted = []
@@ -46,7 +49,7 @@ class EVM(object):
 
         return codeSplitted
 
-    def executeCode(self, environment) -> None:
+    def executeCode(self, state: State, environment: ExecutionEnvironment) -> None:
         """
         The function executes the opcode one by one.
         """
@@ -229,7 +232,7 @@ class EVM(object):
             self.stack.push(environment.addressOwningCode)
         elif operation == 0x31:
             # BALANCE
-            pass
+            self.stack.push(state.get_balance(self.stack.pop()))
         elif operation == 0x32:
             # ORIGIN
             self.stack.push(environment.senderAddress)
