@@ -44,7 +44,7 @@ are poped, added and the result is pushed back on the stack.
 | `0x20` | SHA3 | Compute Keccak-256 hash | - | 30* | X | Stack[0] = Keccak( Memory[Stack[0]...(Stack[0] + Stack[1] - 1)]) && memory expansion function |
 | `0x21` - `0x2f`| Unused | Unused | - | - | - | - |
 | `0x30` | ADDRESS | Get address of currently executing account and push on the stack| Check `execution environment` in YP for `I_a`| 2 | X | Stack[0] = `I_a`|
-| `0x31` | BALANCE | Get balance of the given account | Stack[0] has an address | 400 | | Stack[0] = State[Stack[0]]_b |
+| `0x31` | BALANCE | Get balance of the given account | Stack[0] has an address | 400 | X | Stack[0] = State[Stack[0]]_b |
 | `0x32` | ORIGIN | Get execution origination address and push on the stack | Check `execution environment` in YP for `I_o` | 2 | X | Stack[0] = `I_o`|
 | `0x33` | CALLER | Get caller address and push on the stack | Check `execution environment` in YP for `I_s` | 2 | X | Stack[0] = `I_s`|
 | `0x34` | CALLVALUE | Get deposited value by the instruction/transaction responsible for this execution and push on the stack | Check `execution environment` in YP for `I_v` | 2 | X | Stack[0] = `I_v` |
