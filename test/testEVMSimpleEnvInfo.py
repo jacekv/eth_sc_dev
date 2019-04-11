@@ -5,9 +5,11 @@ import logging
 import inspect
 
 from evm import EVM
-from evm import State
+from state import State
+
 from executionEnvironment import ExecutionEnvironment
 from constants import ZERO_ADDRESS
+from constants import Address
 
 
 class EVMEnvInfoTest(unittest.TestCase):
@@ -39,6 +41,20 @@ class EVMEnvInfoTest(unittest.TestCase):
         environment = ExecutionEnvironment(code, addressOwningCode=0xea674fdde714fd979de3edf0f56aa9716b898ec8)
         self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0xea674fdde714fd979de3edf0f56aa9716b898ec8)
+
+    def testBalance(self):
+        code = '732a5994b501e6a560e727b6c2de5d856396aadd3831'
+        environment = ExecutionEnvironment(code)
+        self.evm.executeCode(State(), environment)
+        self.assertEqual(self.evm.stack.pop(), 0)
+
+    def testBalanceNotZero(self):
+        code = '732a5994b501e6a560e727b6c2de5d856396aadd3831'
+        environment = ExecutionEnvironment(code)
+        s = State()
+        s.storage[0x2a5994b501e6a560e727b6c2de5d856396aadd38] = {'balance': 1337}
+        self.evm.executeCode(s, environment)
+        self.assertEqual(self.evm.stack.pop(), 1337)
 
     def testOrigin(self):
         code = '32'
