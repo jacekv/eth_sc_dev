@@ -68,7 +68,7 @@ class EVM(object):
             elif opcode == 0x20:
                 self.__sha3()
             elif opcode >= 0x30 and opcode <= 0x3E:
-                self.__environmentalInfo(opcode, environment)
+                self.__environmentalInfo(opcode, state, environment)
             elif opcode >= 0x40 and opcode <= 0x45:
                 self.__blockInformation(opcode, environment)
             elif opcode >= 0x50 and opcode <= 0x5B:
@@ -216,7 +216,7 @@ class EVM(object):
         self.stack.push(int(hash, 16))
         self.__mem_expansion(self.activeMemWords, address, length)
 
-    def __environmentalInfo(self, operation, environment) -> None:
+    def __environmentalInfo(self, operation, state, environment) -> None:
         """
         Contains different environment operations, such as ADDRESS, BALANCE, ORIGIN, CALLER, CALLVALUE and more
 

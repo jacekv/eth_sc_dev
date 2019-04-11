@@ -5,23 +5,23 @@ class Storage(object):
     def __init__(self):
         self.storage = {}
 
-    def sstore(self, address, data):
+    def sstore(self, key, data):
         """
         Function sstore stores data in storage at the given address.
 
         \param int      : The address on where to store the data
         \param (int/str): The data to be stored in the storage
         """
-        if address >= 2**256:
-            raise ValueError('Given address can\'t be larger than 2**256.')
-        if type(address) != 'int':
-            raise ValueError('Address is not of type int.')
-        if address in self.storage:
-            self.storage[address].setWord(data)
+        if key >= 2**256:
+            raise ValueError('Given key can\'t be larger than 2**256.')
+        if type(key) != 'int':
+            raise ValueError('Key is not of type int.')
+        if key in self.storage:
+            self.storage[key].setWord(data)
         else:
-            self.storage[address] = Word(data)
+            self.storage[key] = Word(data)
 
-    def sload(self, address):
+    def sload(self, key):
         """
         The function returns the data located at the given address. In case
         there is no data stored, a zero-word is returned.
@@ -30,8 +30,8 @@ class Storage(object):
 
         \returns String: The data stored at the given address.
         """
-        if address in self.storage:
-            return self.storage[address].getWord()
+        if key in self.storage:
+            return self.storage[key].getWord()
         else:
             return '00' * 32
 
@@ -46,8 +46,3 @@ class Storage(object):
         for k in self.storage:
             output += (hex(k) + '  ' + self.storage[k].getWord())
         return output
-
-if __name__ == '__main__':
-    s = Storage()
-    s.sstore(0x40, 0xAABBDDCC)
-    print(s)
