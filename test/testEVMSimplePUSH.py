@@ -5,6 +5,7 @@ import logging
 sys.path.append("../eth/")
 
 from evm import EVM
+from evm import State
 from executionEnvironment import ExecutionEnvironment
 
 class EVMPushTest(unittest.TestCase):
@@ -20,8 +21,6 @@ class EVMPushTest(unittest.TestCase):
 
         # add formatter to ch
         ch.setFormatter(formatter)
-
-        # add ch to logger
         logger.addHandler(ch)
         self.evm = EVM(logger=logger)
 
@@ -29,193 +28,193 @@ class EVMPushTest(unittest.TestCase):
         #push1 0x33
         code = '6033'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x33)
 
     def testPush2(self):
         code = '611122'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x1122)
 
     def testPush3(self):
         code = '62112233'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233)
 
     def testPush4(self):
         code = '6311223344'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x11223344)
 
     def testPush5(self):
         code = '641122334455'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x1122334455)
 
     def testPush6(self):
         code = '65112233445566'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566)
 
     def testPush7(self):
         code = '6611223344556677'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x11223344556677)
 
     def testPush8(self):
         code = '671122334455667788'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x1122334455667788)
 
     def testPush9(self):
         code = '68112233445566778899'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899)
 
     def testPush10(self):
         code = '69112233445566778899AA'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AA)
 
     def testPush11(self):
         code = '6A112233445566778899AABB'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABB)
 
     def testPush12(self):
         code = '6B112233445566778899AABBCC'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCC)
 
     def testPush13(self):
         code = '6C112233445566778899AABBCCDD'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDD)
 
     def testPush14(self):
         code = '6D112233445566778899AABBCCDDEE'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEE)
 
     def testPush15(self):
         code = '6E112233445566778899AABBCCDDEEFF'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF)
 
     def testPush16(self):
         code = '6F112233445566778899AABBCCDDEEFF00'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00)
 
     def testPush17(self):
         code = '70112233445566778899AABBCCDDEEFF0011'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF0011)
 
     def testPush18(self):
         code = '71112233445566778899AABBCCDDEEFF001122'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF001122)
 
     def testPush19(self):
         code = '72112233445566778899AABBCCDDEEFF00112233'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00112233)
 
     def testPush20(self):
         code = '73112233445566778899AABBCCDDEEFF0011223344'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF0011223344)
 
     def testPush21(self):
         code = '74112233445566778899AABBCCDDEEFF001122334455'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF001122334455)
 
     def testPush22(self):
         code = '75112233445566778899AABBCCDDEEFF00112233445566'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00112233445566)
 
     def testPush23(self):
         code = '76112233445566778899AABBCCDDEEFF0011223344556677'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF0011223344556677)
 
     def testPush24(self):
         code = '77112233445566778899AABBCCDDEEFF001122334455667788'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF001122334455667788)
 
     def testPush25(self):
         code = '78112233445566778899AABBCCDDEEFF00112233445566778899'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00112233445566778899)
 
     def testPush26(self):
         code = '79112233445566778899AABBCCDDEEFF00112233445566778899AA'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00112233445566778899AA)
 
     def testPush27(self):
         code = '7A112233445566778899AABBCCDDEEFF00112233445566778899AABB'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00112233445566778899AABB)
 
     def testPush28(self):
         code = '7B112233445566778899AABBCCDDEEFF00112233445566778899AABBCC'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00112233445566778899AABBCC)
 
     def testPush29(self):
         code = '7C112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDD'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDD)
 
     def testPush30(self):
         code = '7D112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEE'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEE)
 
     def testPush31(self):
         code = '7E112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF)
 
     def testPush32(self):
         code = '7F112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00'
         environment = ExecutionEnvironment(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), 0x112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00)
 
     def runTest(self):

@@ -5,6 +5,7 @@ import inspect
 
 sys.path.append("../eth/")
 from evm import EVM
+from evm import State
 from executionEnvironment import ExecutionEnvironment
 
 class EVMLogicTest(unittest.TestCase):
@@ -64,7 +65,7 @@ class EVMLogicTest(unittest.TestCase):
     def execCode(self, code, assertValue):
         environment = ExecutionEnvironment(code)
         #self.evm.setCode(code)
-        self.evm.executeCode(environment)
+        self.evm.executeCode(State(), environment)
         self.assertEqual(self.evm.stack.pop(), assertValue)
 
 
